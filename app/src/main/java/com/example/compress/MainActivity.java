@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import com.example.compress.util.Authentication_codes;
 import com.example.compress.util.ConvertGreyImg;
+import com.example.compress.util.Joint_de;
 import com.example.compress.util.Joint_en;
 import com.example.compress.util.RGB2Grey;
 
@@ -22,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
     ImageView authenticationImage;
     ImageView originImage;
     ImageView enOriginImage;
+    ImageView receiveImage;
+    ImageView restoreImage;
     InputStream is;
     double[] key = {0.78, 3.59, Math.pow(7, 5), 0, Math.pow(2, 31) - 1, 102};
     int m = 4;
@@ -52,6 +55,12 @@ public class MainActivity extends AppCompatActivity {
         Bitmap resultBitmap = Joint_en.joint_en(tempBitmap, m, n, EnAuthenticationBitmap, key);
         enOriginImage.setImageBitmap(resultBitmap);
 
+        //TODO 收到图像解码
+        receiveImage = (ImageView) findViewById(R.id.receive);
+        receiveImage.setImageBitmap(resultBitmap);
+        Bitmap restoreBitmap = Joint_de.joint_de(resultBitmap, m, n, EnAuthenticationBitmap, key);
+        restoreImage = (ImageView) findViewById(R.id.restore);
+        restoreImage.setImageBitmap(restoreBitmap);
     }
 
     public Bitmap loadAnyImage(String url) {

@@ -2,8 +2,6 @@ package com.example.compress.util;
 
 import android.graphics.Bitmap;
 
-import java.util.Arrays;
-
 /**
  * Created by ShadowAnt on 2017/5/7.
  */
