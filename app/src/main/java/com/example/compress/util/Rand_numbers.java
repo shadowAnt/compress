@@ -23,7 +23,7 @@ public class Rand_numbers {
         for(int i=1; i<n; i++){
             sequence[i] = (key[2]*sequence[i-1] + key[3]) % key[4];
         }
-        for(int i=0; i<n; i++){
+        for(int i=0; i<n; i++){//此处不能合并在一个循环里面
             sequence[i] %= range;
         }
         return sequence;

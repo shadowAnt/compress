@@ -2,15 +2,11 @@ package com.example.compress.util;
 
 import android.graphics.Bitmap;
 
-import java.util.Arrays;
-
 /**
  * Created by ShadowAnt on 2017/5/7.
  */
 
 public class Authentication_codes {
-
-
     /**
      * 认证图像进行简单的加密
      *
@@ -33,8 +29,9 @@ public class Authentication_codes {
         int num = Matlab.numel(codes);
         double[] sequence = Rand_numbers.Rand_numbers(key, num, 2);
         int[] codesArray = RGB2Grey.bitmap2array(codes);
+//        System.out.println("codesArray"+ Arrays.toString(codesArray));
+
         //TODO 二值化处理
-        System.out.println("codesArray"+ Arrays.toString(codesArray));
         for(int i=0; i<num; i++){
             if(codesArray[i]>=128){
                 codesArray[i] = 1;
@@ -45,7 +42,8 @@ public class Authentication_codes {
         for(int i=0; i<num; i++){
             codesArray[i] ^= (int)sequence[i];
         }
-        System.out.println("codesArray after ^"+ Arrays.toString(codesArray));//0 1
+//        System.out.println("codesArray after ^"+ Arrays.toString(codesArray));//0 1
+
         //TODO 把codesArray转为bitmap
         for(int i=0; i<num; i++){
             if(codesArray[i]==1){
@@ -57,8 +55,8 @@ public class Authentication_codes {
         }
         Bitmap result = Bitmap.createBitmap(codes.getWidth(), codes.getHeight(), Bitmap.Config.ARGB_8888);//int数组转为bitmap
         result.setPixels(codesArray, 0, codes.getWidth(), 0, 0, codes.getWidth(), codes.getHeight());
-        int[] resultArray = RGB2Grey.bitmap2array(result);
-        System.out.println("resultArray"+ Arrays.toString(resultArray));
+//        int[] resultArray = RGB2Grey.bitmap2array(result);
+//        System.out.println("resultArray"+ Arrays.toString(resultArray));
         return result;
     }
 }

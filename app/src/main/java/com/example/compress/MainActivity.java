@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import com.example.compress.util.Authentication_codes;
 import com.example.compress.util.ConvertGreyImg;
+import com.example.compress.util.Joint_en;
 import com.example.compress.util.RGB2Grey;
 
 import java.io.IOException;
@@ -19,25 +20,41 @@ public class MainActivity extends AppCompatActivity {
 
     ImageView enAuthenticationImage;
     ImageView authenticationImage;
+    ImageView originImage;
+    ImageView enOriginImage;
     InputStream is;
     double[] key = {0.78, 3.59, Math.pow(7, 5), 0, Math.pow(2, 31) - 1, 102};
+    int m = 4;
+    int n = 4;
+    String authenticationUrl = "AHU.bmp";
+    String originUrl = "lena.bmp";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //TODO 对认证图像的处理
         authenticationImage = (ImageView) findViewById(R.id.authentication);
         enAuthenticationImage = (ImageView) findViewById(R.id.enAuthentication);
-        String authenticationUrl = "lena.bmp";
         Bitmap authenticationBitmap = loadAnyImage(authenticationUrl);
         authenticationImage.setImageBitmap(authenticationBitmap);
-        Bitmap EnAuthenticationBitmap = authenticate(authenticationUrl);
+        Bitmap tempBitmap = ConvertGreyImg.convertGreyImg(authenticationBitmap);
+        Bitmap EnAuthenticationBitmap = Authentication_codes.authentication_codes(tempBitmap, key);
         enAuthenticationImage.setImageBitmap(EnAuthenticationBitmap);
-//        show(bitmap);
+
+        //TODO 对载体图像的处理
+        originImage = (ImageView) findViewById(R.id.origin);
+        enOriginImage = (ImageView) findViewById(R.id.enOrigin);
+        Bitmap originBitmap = loadAnyImage(originUrl);
+        originImage.setImageBitmap(originBitmap);
+        tempBitmap = ConvertGreyImg.convertGreyImg(originBitmap);
+        Bitmap resultBitmap = Joint_en.joint_en(tempBitmap, m, n, EnAuthenticationBitmap, key);
+        enOriginImage.setImageBitmap(resultBitmap);
+
     }
 
-    public Bitmap loadAnyImage(String url){
+    public Bitmap loadAnyImage(String url) {
         try {
             //is = getAssets().open("lena.bmp");
             is = getAssets().open(url);
@@ -45,26 +62,11 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         Bitmap bitmap = BitmapFactory.decodeStream(is);
-        return bitmap;
-    }
-
-    public Bitmap authenticate(String url){
-        try {
-            //is = getAssets().open("lena.bmp");
-            is = getAssets().open(url);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Bitmap bitmap = BitmapFactory.decodeStream(is);
-        bitmap = ConvertGreyImg.convertGreyImg(bitmap);
-        //TODO 生成待加入的认证信息
-        bitmap = Authentication_codes.authentication_codes(bitmap, key);
         return bitmap;
     }
 
     /**
-    * rgb->grey
-    *
+     * rgb->grey
      */
     public void show(Bitmap bitmap) {
         int width = bitmap.getWidth();         //获取位图的宽
@@ -79,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println(temp);
             }
         }
-        System.out.println("width: " + width+"  height:  "+height);
+        System.out.println("width: " + width + "  height:  " + height);
     }
 }
-
