@@ -24,6 +24,7 @@ public class ConvertGreyImg {
                 int blue = (grey & 0x000000FF);
 
                 grey = (int) ((float) red * 0.3 + (float) green * 0.59 + (float) blue * 0.11);
+                //
                 grey = alpha | (grey << 16) | (grey << 8) | grey;
                 pixels[width * i + j] = grey;
             }
