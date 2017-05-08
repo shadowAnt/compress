@@ -11,6 +11,8 @@ import com.example.compress.util.Authentication_codes;
 import com.example.compress.util.ConvertGreyImg;
 import com.example.compress.util.Joint_de;
 import com.example.compress.util.Joint_en;
+import com.example.compress.util.Matlab;
+import com.example.compress.util.PSNR;
 import com.example.compress.util.RGB2Grey;
 import com.example.compress.util.Show;
 
@@ -71,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         restoreImage = (ImageView) findViewById(R.id.restore);
         restoreImage.setImageBitmap(restoreBitmap);
         Log.e("tag----------", "对收到图像解码完成");
+        Log.i("PSNR: ", PSNR.psnr(tempBitmap, restoreBitmap)+"");
     }
 
     public Bitmap loadAnyImage(String url) {

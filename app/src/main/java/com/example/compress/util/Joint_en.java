@@ -42,7 +42,7 @@ public class Joint_en {
         double[] xor_key = Rand_numbers.Rand_numbers(key, blockNum, 256);
         System.out.println("xor_key = "+ xor_key[0]+"  "+ xor_key[1]+"  "+ xor_key[2]);
         double[] sequence = Chaotic.chaotic_maping_sequence(key[0], key[1], blockNum);
-        System.out.println("sequence "+ sequence.length + Arrays.toString(sequence));//16384 + 0.78, 0.6160439999999999, 0.84915630632976, 0.45984264676307, 0.89171071926
+        System.out.println("sequence " + sequence.length + Arrays.toString(sequence));//16384 + 0.78, 0.6160439999999999, 0.84915630632976, 0.45984264676307, 0.89171071926
         int[] bitmap = new int[m * n];
         for(int j=0; j<blockNum; j++){
             //TODO 对每块进行处理 AMBTC

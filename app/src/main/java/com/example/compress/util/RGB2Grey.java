@@ -40,4 +40,21 @@ public class RGB2Grey {
         }
         return codes;
     }
+
+    public static int[][] im2array(Bitmap bitmap){
+        int width = bitmap.getWidth();         //获取位图的宽
+        int height = bitmap.getHeight();       //获取位图的高
+        int ans = width * height;
+        int[][] codes = new int[height][width];
+        //512  512  262144
+        int[] pixels = new int[ans]; //通过位图的大小创建像素点数组
+        bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
+        for (int i = 0; i < height; i++) {//height
+            for (int j = 0; j < width; j++) {//width
+                int temp = RGB2Grey.RGB2Grey(pixels, width, i, j);
+                codes[i][j] = temp;
+            }
+        }
+        return codes;
+    }
 }
