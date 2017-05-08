@@ -28,17 +28,15 @@ public class RGB2Grey {
         int height = bitmap.getHeight();       //获取位图的高
         int ans = width * height;
         int[] codes = new int[ans+1];
-        bitmap.getPixels(codes, 0, width, 0, 0, width, height);
-        //-1
-        for(int i=0; i<ans; i++){
-            int grey = codes[i];
-            int red = ((grey & 0x00FF0000) >> 16);
-            int green = ((grey & 0x0000FF00) >> 8);
-            int blue = (grey & 0x000000FF);
-            grey = (int) ((float) red * 0.3 + (float) green * 0.59 + (float) blue * 0.11);
-            //255 0
-            //if(grey==255) grey = 1;
-            codes[i] = grey;
+        //512  512  262144
+        int[] pixels = new int[ans]; //通过位图的大小创建像素点数组
+        bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
+        int index = 0;
+        for (int i = 0; i < height; i++) {//height
+            for (int j = 0; j < width; j++) {//width
+                int temp = RGB2Grey.RGB2Grey(pixels, width, i, j);
+                codes[index++] = temp;
+            }
         }
         return codes;
     }

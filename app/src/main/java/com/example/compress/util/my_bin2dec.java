@@ -24,8 +24,8 @@ public class My_bin2dec {
         int[] dec = new int[2];
         for(int i=0; i<len-n+1; i+=n){
             int temp = 0;
-            for(int j=i; j<i+n-1; j++){
-                temp += bin[j] * Math.pow(2, (j-1)%n);
+            for(int j=i; j<i+n; j++){
+                temp += bin[j] * Math.pow(2, j%n);
             }
             dec[(int)Math.ceil(i/n)] = temp;
         }

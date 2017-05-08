@@ -25,6 +25,7 @@ public class Matlab {
         int[] bitmap1Array = RGB2Grey.bitmap2array(bitmap);
         int height = bitmap.getHeight();
         int width = bitmap.getWidth();
+//        System.out.println("图像分块变为二维数组 输入图像的长宽"+height+ " "+width);
         int[][] bitmap2Array = new int[height][width];
 
         //TODO 一维数组变二维数组
