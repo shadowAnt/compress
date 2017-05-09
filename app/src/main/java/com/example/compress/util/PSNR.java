@@ -36,7 +36,8 @@ public class PSNR {
             }
         }
 //        MSE=mean2(E.*E);
-        double MSE = Matlab.mean(Matlab.multip(e, e));
+//        double MSE = Matlab.mean(Matlab.multip(e, e));
+        double MSE = Matlab.mean(Matlab.multip2(e));
         double ans;
         if(MSE==0) ans =-1;
         else ans = 10*log10(255*255/MSE);

@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
     ImageView receiveImage;
     ImageView restoreImage;
     InputStream is;
-    double[] key = {0.78, 3.59, Math.pow(7, 5), 0, Math.pow(2, 31) - 1, 102};
     int m = 4;
     int n = 4;
     String authenticationUrl = "AHU.bmp";
@@ -73,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         restoreImage = (ImageView) findViewById(R.id.restore);
         restoreImage.setImageBitmap(restoreBitmap);
         Log.e("tag----------", "对收到图像解码完成");
-        Log.i("PSNR: ", PSNR.psnr(tempBitmap, restoreBitmap)+"");
+        Log.w("PSNR: ", PSNR.psnr(tempBitmap, restoreBitmap)+"");
     }
 
     public Bitmap loadAnyImage(String url) {
