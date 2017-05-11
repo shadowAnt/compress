@@ -1,6 +1,7 @@
 package com.example.compress.util;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import java.util.Arrays;
 
@@ -9,7 +10,17 @@ import java.util.Arrays;
  */
 
 public class Joint_de {
-    public static Bitmap joint_de(Bitmap resultBitmap, int oH, int oW, int m, int n, Bitmap EnAuthenticationBitmap, double[] key) {
+    /**
+     * @param resultBitmap           加密处理后的图片
+     * @param oH                     原始图像的高度
+     * @param oW                     源氏图像的宽度
+     * @param m                      分块大小
+     * @param n
+     * @param EnAuthenticationBitmap 嵌入的认证信息
+     * @param key                    密钥
+     * @return Bitmap数组，[0]为解密后的原始图像,[1]为检测是否篡改的图像
+     */
+    public static Bitmap[] joint_de(Bitmap resultBitmap, int oH, int oW, int m, int n, Bitmap EnAuthenticationBitmap, double[] key) {
         int[] EnAuthenticationArray = RGB2Grey.bitmap2array(EnAuthenticationBitmap);
         for (int i = 0; i < EnAuthenticationArray.length; i++) {
             if (EnAuthenticationArray[i] == 255) {
@@ -26,12 +37,13 @@ public class Joint_de {
                 Ic[i][j] = 0;
             }
         }
-//        int[][] Ic2 = new int[h][w];
-//        for(int i=0; i<h; i++)
-//            for(int j=0; j<w; j++){
-//                Ic2[i][j] = Ic[i][j] + 255;
-//            }
-//        int[][] Ic3 = Ic2;
+        //TODO 初始化检测篡改图像
+        int[][] Ic2 = new int[sumPixel][sumBlock];
+        for (int i = 0; i < sumPixel; i++) {
+            for (int j = 0; j < sumBlock; j++) {
+                Ic2[i][j] = 255;
+            }
+        }
         int[][] I_compress = Matlab.im2col(resultBitmap, 2, 2);
         System.out.println("把压缩加密矩阵分块 ");
         Show.show2array(I_compress);
@@ -51,8 +63,9 @@ public class Joint_de {
             int code = Extr.extr(a, b, dec);
             if (j == 0) System.out.println("code 0= " + code);
             if (code != EnAuthenticationArray[j]) {
-                for (int k = 0; k < m * n; k++) {
-                    Ic[k][j] = 0;
+                for (int k = 0; k < sumPixel; k++) {
+                    Ic2[k][j] = 0;
+//                    Log.e("监测到修改 ", "0");
                 }
             }
             //TODO 为直接解压缩保留
@@ -73,7 +86,7 @@ public class Joint_de {
             b = group4[1];
             dec[0] = group4[2];
             dec[1] = group4[3];
-            if(j==0)
+            if (j == 0)
                 System.out.println("低均值 高均值： " + a + " " + b);
             int[] longBitmap = My_dec2bin.my_dec2bin(dec, 8);
             // 用key对bitmap置乱
@@ -92,6 +105,10 @@ public class Joint_de {
             }
         }
         Bitmap I2 = Matlab.col2im(Ic, m, n, oH, oW);
-        return I2;
+        Bitmap tamper = Matlab.col2im(Ic2, m, n, oH, oW);
+        Bitmap[] result = new Bitmap[2];
+        result[0] = I2;
+        result[1] = tamper;
+        return result;
     }
 }

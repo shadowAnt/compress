@@ -75,7 +75,7 @@ public class Matlab {
         int blockWidth = (int) Math.ceil(width / n);//竖着分可以分几块
         int bigHeight = blockHeight * m;
         int bigWidth = blockWidth * n;
-        int[][] bitmap2Array = new int[height+m-1][width+n-1];
+        int[][] bitmap2Array = new int[height + m - 1][width + n - 1];
 //        Log.e("bigHeight  ",bigHeight + "  " +  bigWidth);
         int blockPixel = m * n;
         for (int j = 0; j < blockNum; j++) {
@@ -104,7 +104,7 @@ public class Matlab {
         for (int i = 0; i < sumPixel; i++) {
             bitmap1Array[i] = alpha | (bitmap1Array[i] << 16) | (bitmap1Array[i] << 8) | bitmap1Array[i];
         }
-        System.out.println(bitmap1Array[0]+" "+bitmap1Array[1]);
+        System.out.println(bitmap1Array[0] + " " + bitmap1Array[1]);
         Bitmap resultBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);//int数组转为bitmap ALPHA_8 ARGB_8888
         resultBitmap.setPixels(bitmap1Array, 0, width, 0, 0, width, height);
         return resultBitmap;
@@ -144,20 +144,14 @@ public class Matlab {
         return sum;
     }
 
-    public static int[][] multip2(int[][] x){
+    public static int[][] multip2(int[][] x) {
         int m = x.length;
         int n = x[0].length;
-        for(int i=0; i<m; i++){
-            for(int j=0; j<n; j++){
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
                 x[i][j] = x[i][j] * x[i][j];
             }
         }
         return x;
     }
-
-//    //TODO 二维普通矩阵->bitmap
-//    public static Bitmap mtx2bit(int[][] array){
-//        Bitmap bitmap = null;
-//
-//    }
 }
