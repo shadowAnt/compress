@@ -15,6 +15,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".HomeActivity" />
+        <activity android:name=".AuthenticActivity" />
+        <activity android:name=".EncodeActivity" />
+        <activity android:name=".TamperActivity" />
+        <activity android:name=".DecodeActivity"></activity>
     </application>
 
 </manifest>
