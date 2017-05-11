@@ -14,7 +14,7 @@ public class Rand_numbers {
      * @return 一维数组
      */
     public static double[] Rand_numbers(double[] key, int n, int range){
-        double[] sequence = new double[n+1];
+        double[] sequence = new double[n];
         for(int i=0; i<n; i++){
             sequence[i] = 0;
         }

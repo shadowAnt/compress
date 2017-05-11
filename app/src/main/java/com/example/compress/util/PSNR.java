@@ -35,8 +35,6 @@ public class PSNR {
                 e[i][j] = i1[i][j] - i2[i][j];
             }
         }
-//        MSE=mean2(E.*E);
-//        double MSE = Matlab.mean(Matlab.multip(e, e));
         double MSE = Matlab.mean(Matlab.multip2(e));
         double ans;
         if(MSE==0) ans =-1;

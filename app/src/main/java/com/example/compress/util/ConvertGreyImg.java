@@ -18,13 +18,10 @@ public class ConvertGreyImg {
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 int grey = pixels[width * i + j];
-
                 int red = ((grey & 0x00FF0000) >> 16);
                 int green = ((grey & 0x0000FF00) >> 8);
                 int blue = (grey & 0x000000FF);
-
                 grey = (int) ((float) red * 0.3 + (float) green * 0.59 + (float) blue * 0.11);
-                //
                 grey = alpha | (grey << 16) | (grey << 8) | grey;
                 pixels[width * i + j] = grey;
             }

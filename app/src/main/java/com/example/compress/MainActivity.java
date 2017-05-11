@@ -32,7 +32,9 @@ public class MainActivity extends AppCompatActivity {
     int m = 4;
     int n = 4;
     String authenticationUrl = "AHU.bmp";
+//    String originUrl = "24.bmp";
     String originUrl = "lena.bmp";
+//    String originUrl = "peppers.bmp";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -90,7 +90,7 @@ public class Joint_en {
             dec[0] = group4[2];
             dec[1] = group4[3];
             group4 = Embed.embed(a, b, dec, EnAuthenticationArray[j]);     //嵌入认证信息
-            if(j==0)
+            if(j==0||j==1)
                 System.out.println("嵌入认证信息之后的四元组  " + Arrays.toString(group4));
             I_compress[0][j] = group4[0];
             I_compress[1][j] = group4[1];

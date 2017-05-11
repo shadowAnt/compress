@@ -76,27 +76,22 @@ public class Matlab {
         int bigHeight = blockHeight * m;
         int bigWidth = blockWidth * n;
         int[][] bitmap2Array = new int[height+m-1][width+n-1];
-        Log.e("bigHeight  ",bigHeight + "  " +  bigWidth);
-
+//        Log.e("bigHeight  ",bigHeight + "  " +  bigWidth);
         int blockPixel = m * n;
         for (int j = 0; j < blockNum; j++) {
             //TODO 把一列对应的一块赋值 i为正在处理的当前块序号,(row,col)为当前块对应的原始二维数组第一个像素
             int row = (j * m) % height;
             int col = j / blockHeight;
             col *= n;
-
             for (int i = 0; i < blockPixel; i++) {//4
                 int rowIndex = i % m;
-//                int colIndex = i / n;
                 int colIndex = i / n;
                 bitmap2Array[row + rowIndex][col + colIndex] = I_compress[i][j];
-//                if(bitmap2Array[0][0]!=249)System.out.println(i+" "+j);
             }
         }
-//        System.out.println(bitmap2Array[0][0]);
+//        System.out.println(bitmap2Array[0][0]+" "+bitmap2Array[0][1]+" "+bitmap2Array[0][1]+" "+bitmap2Array[1][1]+" ");//正常
         //TODO 二维普通矩阵转为一维矩阵
-//        int sumPixel = height * width;
-        int sumPixel = (height+m-1)*(width+n-1);
+        int sumPixel = height * width;
         int[] bitmap1Array = new int[sumPixel];
         int index = 0;
         for (int i = 0; i < height; i++) {
@@ -109,9 +104,9 @@ public class Matlab {
         for (int i = 0; i < sumPixel; i++) {
             bitmap1Array[i] = alpha | (bitmap1Array[i] << 16) | (bitmap1Array[i] << 8) | bitmap1Array[i];
         }
-        Bitmap resultBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);//int数组转为bitmap
+        System.out.println(bitmap1Array[0]+" "+bitmap1Array[1]);
+        Bitmap resultBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);//int数组转为bitmap ALPHA_8 ARGB_8888
         resultBitmap.setPixels(bitmap1Array, 0, width, 0, 0, width, height);
-
         return resultBitmap;
     }
 
@@ -144,29 +139,9 @@ public class Matlab {
             for (int j = 0; j < width; j++) {
                 sum += input[i][j];
             }
-
         }
         sum = sum / (double) (height * width);
         return sum;
-    }
-
-    public static int[][] multip(int[][] x, int[][] y) {
-        int[][] result = null;
-        int a = x[0].length;
-        int b = y.length;
-        int c = x.length;
-        int d = y[0].length;
-        result = new int[c][d];
-        for (int i = 0; i < c; i++) {
-            for (int j = 0; j < d; j++) {
-                int sum = 0;
-                for (int k = 0; k < a; k++) {
-                    sum += x[i][k] * y[k][j];
-                }
-                result[i][j] = sum;
-            }
-        }
-        return result;
     }
 
     public static int[][] multip2(int[][] x){
@@ -179,4 +154,10 @@ public class Matlab {
         }
         return x;
     }
+
+//    //TODO 二维普通矩阵->bitmap
+//    public static Bitmap mtx2bit(int[][] array){
+//        Bitmap bitmap = null;
+//
+//    }
 }

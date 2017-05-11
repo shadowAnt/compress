@@ -73,6 +73,8 @@ public class Joint_de {
             b = group4[1];
             dec[0] = group4[2];
             dec[1] = group4[3];
+            if(j==0)
+                System.out.println("低均值 高均值： " + a + " " + b);
             int[] longBitmap = My_dec2bin.my_dec2bin(dec, 8);
             // 用key对bitmap置乱
             longBitmap = My_derand.my_derand(longBitmap, sequence[j], key[1]);
