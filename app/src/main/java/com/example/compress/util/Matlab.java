@@ -1,7 +1,6 @@
 package com.example.compress.util;
 
 import android.graphics.Bitmap;
-import android.util.Log;
 
 /**
  * Created by ShadowAnt on 2017/5/7.

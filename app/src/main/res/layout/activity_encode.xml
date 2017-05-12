@@ -50,7 +50,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dip"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="8dp"
                 android:background="#696969" />
 
             <LinearLayout
@@ -88,6 +88,25 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="测试信息" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/quitButton_encode"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="上一步" />
+
+                <Button
+                    android:id="@+id/nextButton_encode"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="传输" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

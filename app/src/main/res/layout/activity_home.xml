@@ -6,11 +6,23 @@
     android:orientation="vertical"
     android:weightSum="1">
 
-    <ImageView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.18"
-        android:src="@drawable/title" />
+        android:weightSum="1">
+        <pl.droidsonroids.gif.GifImageView
+            android:id="@+id/aboutme"
+            android:layout_width="78dp"
+            android:layout_height="42dp"
+            android:layout_margin="5dp"
+            android:src="@drawable/aboutme" />
+
+        <ImageView
+            android:layout_width="233dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/title" />
+    </LinearLayout>
+
 
     <View
         android:layout_width="match_parent"
@@ -29,7 +41,7 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:foreground="?attr/selectableItemBackground"
-            app:cardBackgroundColor="#999999"
+            app:cardBackgroundColor="#317EF3"
             app:cardCornerRadius="16dp">
 
             <ImageView
@@ -46,7 +58,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
                 android:text="认证信息"
-                android:textColor="#000"
+                android:textColor="#FFFFFF"
                 android:textSize="16sp" />
         </android.support.v7.widget.CardView>
 
@@ -57,7 +69,7 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:foreground="?attr/selectableItemBackground"
-            app:cardBackgroundColor="#999999"
+            app:cardBackgroundColor="#317EF3"
             app:cardCornerRadius="16dp">
 
             <ImageView
@@ -74,7 +86,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
                 android:text="加密"
-                android:textColor="#000"
+                android:textColor="#FFFFFF"
                 android:textSize="16sp" />
         </android.support.v7.widget.CardView>
     </LinearLayout>
@@ -90,7 +102,7 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:foreground="?attr/selectableItemBackground"
-            app:cardBackgroundColor="#999999"
+            app:cardBackgroundColor="#317EF3"
             app:cardCornerRadius="16dp">
 
             <ImageView
@@ -107,7 +119,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
                 android:text="篡改"
-                android:textColor="#000"
+                android:textColor="#FFFFFF"
                 android:textSize="16sp" />
         </android.support.v7.widget.CardView>
 
@@ -118,7 +130,7 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:foreground="?attr/selectableItemBackground"
-            app:cardBackgroundColor="#999999"
+            app:cardBackgroundColor="#317EF3"
             app:cardCornerRadius="16dp">
 
             <TextView
@@ -128,7 +140,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
                 android:text="解密"
-                android:textColor="#000"
+                android:textColor="#FFFFFF"
                 android:textSize="16sp" />
 
             <ImageView

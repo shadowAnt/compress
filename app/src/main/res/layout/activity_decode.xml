@@ -8,21 +8,68 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin">
 
-    <LinearLayout
+    <ScrollView
+        android:id="@+id/scrollView_decode"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <pl.droidsonroids.gif.GifImageView
-                android:id="@+id/decode"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_margin="5dp"
-                android:src="@drawable/loading" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="收到的加密压缩认证的图像" />
+
+
+                <pl.droidsonroids.gif.GifImageView
+                    android:id="@+id/decode"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_margin="5dp"
+                    android:src="@drawable/loading" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="用来解密的认证图像" />
+
+                <pl.droidsonroids.gif.GifImageView
+                    android:id="@+id/authentic_decode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:src="@drawable/loading" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/startButton_decode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="开始解密" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:layout_marginTop="5dp"
+                android:background="#696969" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -30,56 +77,75 @@
                 android:layout_margin="8dp"
                 android:orientation="vertical">
 
-                <Button
-                    android:id="@+id/startButton_decode"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="开始解密" />
+                    android:layout_margin="5dp"
+                    android:text="篡改位置：" />
+
+                <pl.droidsonroids.gif.GifImageView
+                    android:id="@+id/where"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:src="@drawable/loading" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:text="恢复图像：" />
+
+                <pl.droidsonroids.gif.GifImageView
+                    android:id="@+id/decodeResult"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:src="@drawable/loading" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dip"
+                    android:layout_marginTop="5dp"
+                    android:background="#696969" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:text="对比原始图像：" />
+
+                <pl.droidsonroids.gif.GifImageView
+                    android:id="@+id/originImage_decode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:src="@drawable/loading" />
+
             </LinearLayout>
-        </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dip"
-            android:layout_marginTop="5dp"
-            android:background="#696969" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:background="#696969" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:text="恢复图像：" />
-
-            <pl.droidsonroids.gif.GifImageView
-                android:id="@+id/decodeResult"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_margin="5dp"
-                android:src="@drawable/loading" />
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dip"
-            android:background="#696969" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="8dp">
-
-            <TextView
-                android:id="@+id/authenticText_decode"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="测试信息" />
+                android:layout_margin="8dp">
+
+                <TextView
+                    android:id="@+id/authenticText_decode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="测试信息" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/over"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="结束" />
         </LinearLayout>
-    </LinearLayout>
+    </ScrollView>
 </LinearLayout>
