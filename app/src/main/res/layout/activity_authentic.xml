@@ -20,32 +20,32 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
+                android:layout_height="wrap_content"
+                android:gravity="center">
                 <ImageView
                     android:id="@+id/authenticImage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ahu" />
 
-                <LinearLayout
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/changeButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:orientation="vertical">
+                    android:text="更换图片" />
 
-                    <Button
-                        android:id="@+id/changeButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="更换图片" />
-
-                    <Button
-                        android:id="@+id/startButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="开始处理" />
-                </LinearLayout>
+                <Button
+                    android:id="@+id/startButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="开始处理" />
             </LinearLayout>
 
             <View
@@ -101,7 +101,8 @@
                     android:id="@+id/authenticText"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="测试信息" />
+                    android:text="测试信息"
+                    android:textColor="@color/fbutton_color_belize_hole"/>
             </LinearLayout>
 
             <LinearLayout

@@ -107,7 +107,7 @@ public class DecodeActivity extends AppCompatActivity implements CardView.OnClic
                 resultText.setText(resultString);
                 break;
             case R.id.over:
-                Intent intent = new Intent(this, HomeActivity.class);
+                Intent intent = new Intent(this, ChooseActivity.class);
                 startActivity(intent);
                 finish();
             default:

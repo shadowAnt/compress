@@ -66,8 +66,8 @@ public class EncodeActivity extends AppCompatActivity implements CardView.OnClic
         switch (v.getId()) {
             case R.id.changeButton_encode:
                 //TODO 更改图像
-                Intent intent = new Intent(this, ChangeActivity.class);
-                startActivityForResult(intent, 1);
+//                Intent intent = new Intent(this, .class);
+//                startActivityForResult(intent, 1);
                 break;
             case R.id.startButton_encode:
                 //每加密一次会修改key，这里重新定义下

@@ -1,6 +1,7 @@
 package com.example.compress.util;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 public class ConvertGreyImg {
     /**
@@ -21,7 +22,14 @@ public class ConvertGreyImg {
                 int red = ((grey & 0x00FF0000) >> 16);
                 int green = ((grey & 0x0000FF00) >> 8);
                 int blue = (grey & 0x000000FF);
+                if (i == 0 && j == 0)
+                    Log.e("before", "red= " + red + "  green= " + green + "  blue= " + blue);
                 grey = (int) ((float) red * 0.3 + (float) green * 0.59 + (float) blue * 0.11);
+                red = ((grey & 0x00FF0000) >> 16);
+                green = ((grey & 0x0000FF00) >> 8);
+                blue = (grey & 0x000000FF);
+                if (i == 0 && j == 0)
+                    Log.e("after", "red= " + red + "  green= " + green + "  blue= " + blue);
                 grey = alpha | (grey << 16) | (grey << 8) | grey;
                 pixels[width * i + j] = grey;
             }
@@ -31,4 +39,5 @@ public class ConvertGreyImg {
         result.setPixels(pixels, 0, width, 0, 0, width, height);
         return result;
     }
+
 }
