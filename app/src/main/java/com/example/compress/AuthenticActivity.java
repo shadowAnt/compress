@@ -20,6 +20,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -46,6 +47,7 @@ import pl.droidsonroids.gif.GifImageView;
 
 public class AuthenticActivity extends AppCompatActivity implements CardView.OnClickListener {
 
+    Bitmap bitmap;
     Button choose;
     Button start;
     Button quit;
@@ -75,7 +77,6 @@ public class AuthenticActivity extends AppCompatActivity implements CardView.OnC
         setContentView(R.layout.activity_authentic);
         choose = (Button) findViewById(R.id.changeButton);
         choose.setOnClickListener(this);
-//        choose.setEnabled(false);
         start = (Button) findViewById(R.id.startButton);
         authentic = (ImageView) findViewById(R.id.authenticImage);
         scrollView = (ScrollView) findViewById(R.id.scrollAuthentic);
@@ -90,21 +91,25 @@ public class AuthenticActivity extends AppCompatActivity implements CardView.OnC
         next.setOnClickListener(this);
         authenticationBitmap = loadAnyImage(authenticationUrl);
         authentic.setImageBitmap(authenticationBitmap);
+        bitmap = authenticationBitmap;
     }
 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.startButton:
-                //TODO 开始处理 初始化得到Bitmap
+                long endMili = System.currentTimeMillis();
                 long startMili = System.currentTimeMillis();// 当前时间对应的毫秒数
                 resultString = "";
-                resultString += ("开始 " + startMili + "\n");
-                Bitmap tempBitmap = ConvertGreyImg.convertGreyImg(authenticationBitmap);
-                EnAuthenticationBitmap = Authentication_codes.authentication_codes(tempBitmap, key);
-                authenticResultImage.setImageBitmap(EnAuthenticationBitmap[0]);
-                twoDataAuthenticImage.setImageBitmap(EnAuthenticationBitmap[1]);
-                long endMili = System.currentTimeMillis();
-                resultString += ("结束 " + endMili + "\n");
+
+                int[][][] threeArray = To.BitmapToArray(bitmap);//原始图像的三位数组
+                int[][][] binaryArray = To.RGBtoBinary(threeArray);//二值化后的三位数组
+                Bitmap binaryBitmap = To.ArraytoBitmap(binaryArray);//二值化后的Bitmap
+                twoDataAuthenticImage.setImageBitmap(binaryBitmap);
+
+                int[][][] encodeBinaryArray = To.EncodeBinaryArray(binaryArray, key);//加密后的认证图像三位数组
+                Bitmap encodeBinaryBitmap = To.ArraytoBitmap(encodeBinaryArray);//加密后的Bitmap
+                authenticResultImage.setImageBitmap(encodeBinaryBitmap);
+
                 resultString += ("总耗时为：" + (endMili - startMili) + "毫秒" + "\n");
                 resultText.setText(resultString);
                 break;
@@ -239,7 +244,7 @@ public class AuthenticActivity extends AppCompatActivity implements CardView.OnC
 
     private void displayImage(String imagePath) {
         if (imagePath != null) {
-            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+            bitmap = BitmapFactory.decodeFile(imagePath);
             authentic.setImageBitmap(bitmap);
         } else {
             Toast.makeText(this, "获取图片失败", Toast.LENGTH_SHORT).show();

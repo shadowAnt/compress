@@ -15,15 +15,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 //        Intent intent = new Intent(this, ChooseActivity.class);
-//        Intent intent = new Intent(this, AuthenticActivity.class);
-//        startActivity(intent);
-//        finish();
-        Bitmap bitmap1 = BitmapFactory.decodeResource(getResources(), R.drawable.lena);
-        ImageView image1 = (ImageView) findViewById(R.id.image1);
-        image1.setImageBitmap(bitmap1);
-        int[][][] threeArray = To.BitmapToArray(bitmap1);
-        Bitmap bitmap2 = To.ArraytoBitmap(threeArray);
-        ImageView image2 = (ImageView) findViewById(R.id.image2);
-        image2.setImageBitmap(bitmap2);
+        Intent intent = new Intent(this, AuthenticActivity.class);
+        startActivity(intent);
+        finish();
+
+//        ImageView image1 = (ImageView) findViewById(R.id.image1);
+//        ImageView image2 = (ImageView) findViewById(R.id.image2);
+//        ImageView image3 = (ImageView) findViewById(R.id.image3);
+//        Bitmap bitmap1 = BitmapFactory.decodeResource(getResources(), R.drawable.lena);
+//        int[][][] threeArray = To.BitmapToArray(bitmap1);
+//        Bitmap bitmap2 = To.ArraytoBitmap(threeArray);
+//        int[][][] binaryArray = To.RGBtoBinary(threeArray);
+//        Bitmap bitmap3 = To.ArraytoBitmap(binaryArray);
+//        image1.setImageBitmap(bitmap1);
+//        image2.setImageBitmap(bitmap2);
+//        image3.setImageBitmap(bitmap3);
     }
 }

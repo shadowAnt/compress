@@ -22,6 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center">
+
                 <ImageView
                     android:id="@+id/authenticImage"
                     android:layout_width="wrap_content"
@@ -29,6 +30,7 @@
                     android:src="@drawable/ahu" />
 
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -66,12 +68,19 @@
                     android:layout_margin="5dp"
                     android:text="二值化后的图像：" />
 
-                <pl.droidsonroids.gif.GifImageView
-                    android:id="@+id/twoDataAuthenticationImage"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_margin="5dp"
-                    android:src="@drawable/loading" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+
+                    <pl.droidsonroids.gif.GifImageView
+                        android:id="@+id/twoDataAuthenticationImage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/loading" />
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -79,12 +88,19 @@
                     android:layout_margin="5dp"
                     android:text="生成待嵌入的认证图像：" />
 
-                <pl.droidsonroids.gif.GifImageView
-                    android:id="@+id/authenticResult"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_margin="5dp"
-                    android:src="@drawable/loading" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+
+                    <pl.droidsonroids.gif.GifImageView
+                        android:id="@+id/authenticResult"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/loading" />
+                </LinearLayout>
             </LinearLayout>
 
             <View
@@ -102,7 +118,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="测试信息"
-                    android:textColor="@color/fbutton_color_belize_hole"/>
+                    android:textColor="@color/fbutton_color_belize_hole" />
             </LinearLayout>
 
             <LinearLayout

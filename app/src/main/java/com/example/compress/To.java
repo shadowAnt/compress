@@ -3,6 +3,8 @@ package com.example.compress;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 
+import com.example.compress.util.Rand_numbers;
+
 /**
  * Created by ShadowAnt on 2017/5/20.
  */
@@ -35,14 +37,20 @@ public class To {
         return ans;
     }
 
+    /***
+     * 把三维矩阵变为Bitmap
+     *
+     * @param array
+     * @return
+     */
     public static Bitmap ArraytoBitmap(int[][][] array) {
         int height = array.length;
         int width = array[0].length;
         int[] ans = new int[height * width];
         int index = 0;
-        for (int j = 0; j < width; j++) {
-            for (int i = 0; i < height; i++) {
-                ans[index++] = Color.argb(array[j][i][0], array[j][i][1], array[j][i][2], array[j][i][3]);
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                ans[index++] = Color.argb(array[i][j][0], array[i][j][1], array[i][j][2], array[i][j][3]);
             }
         }
         Bitmap bitmap = Bitmap.createBitmap(ans, width, height, Bitmap.Config.ARGB_8888);
@@ -50,12 +58,74 @@ public class To {
     }
 
     /**
-     * 使用分两法
+     * RGB to binary image
      *
-     * @param bitmap
+     * @param array
      * @return
      */
-    public static int[][][] RGBtoGrayArray(int[][][] bitmap) {
-        return null;
+    public static int[][][] RGBtoBinary(int[][][] array) {
+        int height = array.length;
+        int width = array[0].length;
+        int alpha = 0xff;
+        int sum = 0;
+        int[][][] ans = new int[height][width][4];
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                sum += array[i][j][2];
+            }
+        }
+        sum /= (height * width);
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                int green = array[i][j][2];
+                if (green >= sum) {
+                    ans[i][j][2] = 255;
+                    ans[i][j][0] = alpha;
+                    ans[i][j][1] = 255;
+                    ans[i][j][3] = 255;
+                } else {
+                    ans[i][j][2] = 0;
+                    ans[i][j][0] = alpha;
+                    ans[i][j][1] = 0;
+                    ans[i][j][3] = 0;
+                }
+            }
+        }
+        return ans;
+    }
+
+    /**
+     * 加密认证图像
+     *
+     * @param array binary array
+     * @return
+     */
+    public static int[][][] EncodeBinaryArray(int[][][] array, double[] key) {
+        int height = array.length;
+        int width = array[0].length;
+        int num = height * width;
+        int[][][] ans = new int[height][width][4];
+        int index = 0;
+        int temp;
+        double[] sequence = Rand_numbers.Rand_numbers(key, num, 2);
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                int pixel = array[i][j][1];
+                if (pixel == 255) {
+                    temp = 1 ^ (int) sequence[index];
+                } else {
+                    temp = 0 ^ (int) sequence[index];
+                }
+                if (temp == 1) {
+                    temp = 255;
+                }
+                index++;
+                ans[i][j][0] = 0xff;
+                ans[i][j][1] = temp;
+                ans[i][j][2] = temp;
+                ans[i][j][3] = temp;
+            }
+        }
+        return ans;
     }
 }

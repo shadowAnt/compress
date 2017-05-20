@@ -51,7 +51,7 @@ public class Authentication_codes {
         resultTwoDataBitmap.setPixels(twoDataBitmap, 0, codes.getWidth(), 0, 0, codes.getWidth(), codes.getHeight());
         resultArray[1] = resultTwoDataBitmap;
 
-        //TODO 抑异或加密
+        //TODO 异或加密
         for (int i = 0; i < num; i++) {
             codesArray[i] ^= (int) sequence[i];
         }
