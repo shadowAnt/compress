@@ -101,7 +101,7 @@ public class AuthenticActivity extends AppCompatActivity implements CardView.OnC
             case R.id.startButton:
                 long startMili = System.currentTimeMillis();// 当前时间对应的毫秒数
 
-                int[][][] threeArray = To.BitmapToArray(bitmap);//原始图像的三位数组
+                int[][][] threeArray = To.BitmapToArray(authenticationBitmap);//原始图像的三位数组
                 int[][][] binaryArray = To.RGBtoBinary(threeArray);//二值化后的三位数组
                 Bitmap binaryBitmap = To.ArraytoBitmap(binaryArray);//二值化后的Bitmap
 

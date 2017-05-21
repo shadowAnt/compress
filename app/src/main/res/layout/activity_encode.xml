@@ -20,7 +20,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="选择认证图像：" />
+                android:text="选择加密图像：" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -31,7 +31,7 @@
                     android:id="@+id/originImage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/peppers" />
+                    android:src="@drawable/lena" />
 
             </LinearLayout>
 
@@ -73,12 +73,19 @@
                     android:layout_margin="5dp"
                     android:text="加密压缩图像：" />
 
-                <pl.droidsonroids.gif.GifImageView
-                    android:id="@+id/encodeResult"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_margin="5dp"
-                    android:src="@drawable/loading" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+
+                    <pl.droidsonroids.gif.GifImageView
+                        android:id="@+id/encodeResult"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/loading" />
+                </LinearLayout>
             </LinearLayout>
 
             <View

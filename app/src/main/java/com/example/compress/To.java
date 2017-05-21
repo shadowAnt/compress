@@ -4,9 +4,13 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 
 import com.example.compress.util.Chaotic;
+import com.example.compress.util.Decryption;
 import com.example.compress.util.Embed;
 import com.example.compress.util.Encryption;
+import com.example.compress.util.Extr;
 import com.example.compress.util.My_bin2dec;
+import com.example.compress.util.My_dec2bin;
+import com.example.compress.util.My_derand;
 import com.example.compress.util.My_rand;
 import com.example.compress.util.Rand_numbers;
 
@@ -108,13 +112,20 @@ public class To {
      * @return
      */
     public static int[][][] EncodeBinaryArray(int[][][] array, double[] key) {
+        //TODO 处理过程key会改变，保证下次使用相同的key这里复制一份
+        int len = key.length;
+        double[] cpyKey = new double[len];
+        for (int i = 0; i < len; i++) {
+            cpyKey[i] = key[i];
+        }
+
         int height = array.length;
         int width = array[0].length;
         int num = height * width;
         int[][][] ans = new int[height][width][4];
         int index = 0;
         int temp;
-        double[] sequence = Rand_numbers.Rand_numbers(key, num, 2);
+        double[] sequence = Rand_numbers.Rand_numbers(cpyKey, num, 2);
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 int pixel = array[i][j][1];
@@ -155,8 +166,8 @@ public class To {
                 enAuthenticationArray[index++] = enAuthenticationThreeArray[i][j][1] == 255 ? 1 : 0;
             }
         }
-        //TODO 对载体图像进行处理
-        int height = array.length;
+        //TODO 对载体图像分层单通道
+        int height = array.length;//原始高
         int width = array[0].length;
         int[][] rArray = new int[height][width];
         int[][] gArray = new int[height][width];
@@ -182,17 +193,145 @@ public class To {
         int[][] R = To.col2im(I_compressR, 2, 2, height, width);
         int[][] G = To.col2im(I_compressG, 2, 2, height, width);
         int[][] B = To.col2im(I_compressB, 2, 2, height, width);
-        int h = R.length;
-        int w = R[0].length;
-        int[][][] ans = new int[h][w][4];
-        for (int i = 0; i < h; i++) {
-            for (int j = 0; j < w; j++) {
+        int[][][] ans = new int[height][width][4];
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
                 ans[i][j][0] = 0xff;
                 ans[i][j][1] = R[i][j];
                 ans[i][j][2] = G[i][j];
                 ans[i][j][3] = B[i][j];
             }
         }
+        return ans;
+    }
+
+    public static int[][][][] De(int[][][] array, int oH, int oW, int m, int n, int[][][] enAuthenticationThreeArray, double[] key) {
+        //TODO 认证信息变为一维数组
+        int enAuthenticationHeight = enAuthenticationThreeArray.length;
+        int enAuthenticationWidth = enAuthenticationThreeArray[0].length;
+        int[] enAuthenticationArray = new int[enAuthenticationHeight * enAuthenticationWidth];
+        int index = 0;
+        for (int i = 0; i < enAuthenticationHeight; i++) {
+            for (int j = 0; j < enAuthenticationWidth; j++) {
+                enAuthenticationArray[index++] = enAuthenticationThreeArray[i][j][1] == 255 ? 1 : 0;
+            }
+        }
+        //TODO 对收到的图像进行分块
+        int height = array.length;
+        int width = array[0].length;
+        int[][] rArray = new int[height][width];
+        int[][] gArray = new int[height][width];
+        int[][] bArray = new int[height][width];
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                rArray[i][j] = array[i][j][1];
+                gArray[i][j] = array[i][j][2];
+                bArray[i][j] = array[i][j][3];
+            }
+        }
+        //TODO 二维矩阵变为分块矩阵
+        int[][] I_compressR = To.im2col(rArray, 2, 2);
+        int[][] I_compressG = To.im2col(gArray, 2, 2);
+        int[][] I_compressB = To.im2col(bArray, 2, 2);
+        int[][][] ansR = DeAMBTC(I_compressR, m, n, key, enAuthenticationArray);
+        int[][][] ansG = DeAMBTC(I_compressG, m, n, key, enAuthenticationArray);
+        int[][][] ansB = DeAMBTC(I_compressB, m, n, key, enAuthenticationArray);
+        int[][] IcR = ansR[0];
+        int[][] IcG = ansG[0];
+        int[][] IcB = ansB[0];
+        int[][] Ic2R = ansR[1];
+        int[][] Ic2G = ansG[1];
+        int[][] Ic2B = ansB[1];
+        IcR = To.col2im(IcR, m, n, oH, oW);
+        IcG = To.col2im(IcG, m, n, oH, oW);
+        IcB = To.col2im(IcB, m, n, oH, oW);
+        Ic2R = To.col2im(Ic2R, m, n, oH, oW);
+        Ic2G = To.col2im(Ic2G, m, n, oH, oW);
+        Ic2B = To.col2im(Ic2B, m, n, oH, oW);
+        int[][][] Ic = new int[oH][oW][4];
+        int[][][] Ic2 = new int[oH][oW][4];
+        for (int i = 0; i < oH; i++) {
+            for (int j = 0; j < oW; j++) {
+                Ic[i][j][0] = 0xff;
+                Ic[i][j][1] = IcR[i][j];
+                Ic[i][j][2] = IcG[i][j];
+                Ic[i][j][3] = IcB[i][j];
+                Ic2[i][j][0] = 0xff;
+                Ic2[i][j][1] = Ic2R[i][j];
+                Ic2[i][j][2] = Ic2G[i][j];
+                Ic2[i][j][3] = Ic2B[i][j];
+            }
+        }
+        int[][][][] ans = new int[2][oH][oW][4];
+        ans[0] = Ic;
+        ans[1] = Ic2;
+        return ans;
+    }
+
+    public static int[][][] DeAMBTC(int[][] I_compress, int m, int n, double[] key, int[] enAuthenticationArray) {
+        //TODO 处理过程key会改变，保证下次使用相同的key这里复制一份
+        int len = key.length;
+        double[] cpyKey = new double[len];
+        for (int i = 0; i < len; i++) {
+            cpyKey[i] = key[i];
+        }
+        int sumBlock = I_compress[0].length;
+        int sumPixel = m * n;
+        int[][] Ic = new int[sumPixel][sumBlock];
+        int[][] Ic2 = new int[sumPixel][sumBlock];
+        double[] xor_key = Rand_numbers.Rand_numbers(cpyKey, sumBlock, 256);
+        double[] sequence = Chaotic.chaotic_maping_sequence(cpyKey[0], cpyKey[1], sumBlock);
+        int[] temp_bitmap = new int[m * n];//一块中的像素
+        for (int j = 0; j < sumBlock; j++) {
+            int a = I_compress[0][j];
+            int b = I_compress[1][j];
+            int[] dec = new int[2];
+            dec[0] = I_compress[2][j];
+            dec[1] = I_compress[3][j];
+            //TODO %认证信息
+            int code = Extr.extr(a, b, dec);
+            for (int k = 0; k < sumPixel; k++) {
+                if (code != enAuthenticationArray[j]) {
+                    Ic2[k][j] = 0;
+                } else {
+                    Ic2[k][j] = 255;
+                }
+            }
+            //TODO 为直接解压缩保留
+            int[] bitmap2 = My_dec2bin.my_dec2bin(dec, 8);
+            for (int k = 0; k < m * n; k++) {
+                if (bitmap2[k] == 0) {
+                    temp_bitmap[k] = a;
+                }
+                if (bitmap2[k] == 1) {
+                    temp_bitmap[k] = b;
+                }
+            }
+            //  解密
+            cpyKey[5] = xor_key[j];
+            int[] group4 = Decryption.decrption(a, b, dec, cpyKey);
+            a = group4[0];
+            b = group4[1];
+            dec[0] = group4[2];
+            dec[1] = group4[3];
+            int[] longBitmap = My_dec2bin.my_dec2bin(dec, 8);
+            // 用key对bitmap置乱
+            longBitmap = My_derand.my_derand(longBitmap, sequence[j], cpyKey[1]);
+            for (int k = 0; k < m * n; k++) {
+                if (longBitmap[k] == 0) {
+                    temp_bitmap[k] = a;
+                }
+                if (longBitmap[k] == 1) {
+                    temp_bitmap[k] = b;
+                }
+            }
+            for (int k = 0; k < sumPixel; k++) {
+                Ic[k][j] = temp_bitmap[k];
+            }
+        }
+        int[][][] ans = new int[2][sumPixel][sumBlock];
+        ans[0] = Ic;
+        ans[1] = Ic2;
         return ans;
     }
 
@@ -250,7 +389,7 @@ public class To {
         double[] xor_key = Rand_numbers.Rand_numbers(key, blockNum, 256);
         double[] sequence = Chaotic.chaotic_maping_sequence(key[0], key[1], blockNum);
         int[] bitmap = new int[m * n];//一块的16个像素矩阵
-        int[][] I_compress = new int[4][blockNum];//保留结果
+        int[][] I_compress = new int[4][blockNum];//返回结果
         //TODO 对每块进行处理 AMBTC
         for (int j = 0; j < blockNum; j++) {
             int sum = 0;
@@ -278,7 +417,10 @@ public class To {
             }
             bitmap = My_rand.my_rand(bitmap, sequence[j], key[1], j);
             int[] dec = My_bin2dec.my_bin2dec(bitmap, 8);
-            double[] keyTemp = key;
+            double[] keyTemp = new double[len];//复制key
+            for (int i = 0; i < len; i++) {
+                cpyKey[i] = key[i];
+            }
             keyTemp[5] = xor_key[j];
             int[] group4 = Encryption.encryption(a, b, dec, keyTemp); //异或加密
             a = group4[0];
@@ -308,8 +450,8 @@ public class To {
      */
     public static int[][] col2im(int[][] I_compress, int m, int n, int height, int width) {
         int blockNum = I_compress[0].length;
-        int blockHeight = (int) Math.ceil(height / m);//横着分可以分几块
-        int[][] bitmap2Array = new int[height + m - 1][width + n - 1];
+        int blockHeight = height / m;//横着分可以分几块
+        int[][] bitmap2Array = new int[height][width];//返回结果
         int blockPixel = m * n;
         for (int j = 0; j < blockNum; j++) {
             //TODO 把一列对应的一块赋值 i为正在处理的当前块序号,(row,col)为当前块对应的原始二维数组第一个像素
@@ -319,7 +461,9 @@ public class To {
             for (int i = 0; i < blockPixel; i++) {//4
                 int rowIndex = i % m;
                 int colIndex = i / n;
-                bitmap2Array[row + rowIndex][col + colIndex] = I_compress[i][j];
+                int x = row + rowIndex;
+                int y = col + colIndex;
+                bitmap2Array[x][y] = I_compress[i][j];
             }
         }
         return bitmap2Array;
@@ -357,6 +501,5 @@ public class To {
         }
         return ans;
     }
-
 
 }

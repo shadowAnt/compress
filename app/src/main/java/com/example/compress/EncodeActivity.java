@@ -39,7 +39,7 @@ public class EncodeActivity extends AppCompatActivity implements CardView.OnClic
     InputStream is;
     int m = 4;
     int n = 4;
-    String originUrl = "peppers.bmp";
+    String originUrl = "lena.bmp";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,10 +72,9 @@ public class EncodeActivity extends AppCompatActivity implements CardView.OnClic
 //                startActivityForResult(intent, 1);
                 break;
             case R.id.startButton_encode:
-                //每加密一次会修改key，这里重新定义下
                 double[] key = {0.78, 3.59, Math.pow(7, 5), 0, Math.pow(2, 31) - 1, 102};
                 int[][][] originArray= To.BitmapToArray(originBitmap);
-                int[][][] resultArray = To.En(originArray, m, n, encodeBinaryArray, key);
+                int[][][] resultArray = To.En(originArray, m, n, encodeBinaryArray, key);//(int) Math.ceil(height / m) * 2;
                 resultBitmap = To.ArraytoBitmap(resultArray);
                 resultImage.setImageBitmap(resultBitmap);
 

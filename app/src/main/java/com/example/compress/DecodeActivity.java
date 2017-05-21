@@ -44,7 +44,7 @@ public class DecodeActivity extends AppCompatActivity implements CardView.OnClic
     String resultString;
     Bitmap[] resultBitmapArray;
     Bitmap[] restoreBitmap;//最终结果
-    String originUrl = "peppers.bmp";
+    String originUrl = "lena.bmp";
     int originWidth;
     int originHight;
     Bitmap authenticationBitmap;
@@ -72,7 +72,6 @@ public class DecodeActivity extends AppCompatActivity implements CardView.OnClic
         //加载初始图像
         decodeImage.setImageBitmap(resultBitmap);
         originBitmap = loadAnyImage(originUrl);
-        originBitmap = ConvertGreyImg.convertGreyImg(originBitmap);
         originImage.setImageBitmap(originBitmap);
         authenticationBitmap = loadAnyImage(authenticationUrl);
         authenticImage.setImageBitmap(authenticationBitmap);
@@ -81,18 +80,28 @@ public class DecodeActivity extends AppCompatActivity implements CardView.OnClic
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.startButton_decode:
-
-                Bitmap tempBitmap = ConvertGreyImg.convertGreyImg(authenticationBitmap);
                 double[] key = {0.78, 3.59, Math.pow(7, 5), 0, Math.pow(2, 31) - 1, 102};
-                resultBitmapArray = Authentication_codes.authentication_codes(tempBitmap, key);
+                //TODO 处理认证图像
+                int[][][] threeArray = To.BitmapToArray(authenticationBitmap);//原始图像的三位数组
+                int[][][] binaryArray = To.RGBtoBinary(threeArray);//二值化后的三位数组
+                int[][][] encodeBinaryArray = To.EncodeBinaryArray(binaryArray, key);//加密后的认证图像三维数组
+                int[][][] resultArray = To.BitmapToArray(resultBitmap);
+                //TODO 解密
+                int[][][][] ans = To.De(resultArray, originHight, originWidth, m, n, encodeBinaryArray, key);
+                int[][][] Ic = ans[0];
+                int[][][] Ic2 = ans[1];
+                Bitmap icBitmap = To.ArraytoBitmap(Ic);
+                Bitmap ic2Bitmap = To.ArraytoBitmap(Ic2);
+                decodeResultImage.setImageBitmap(icBitmap);
+                whereImage.setImageBitmap(ic2Bitmap);
 
-                double[] key2 = {0.78, 3.59, Math.pow(7, 5), 0, Math.pow(2, 31) - 1, 102};
-                restoreBitmap = Joint_de.joint_de(resultBitmap, originHight, originWidth, m, n, resultBitmapArray[0], key2);
-                decodeResultImage.setImageBitmap(restoreBitmap[0]);
-                java.text.DecimalFormat df = new java.text.DecimalFormat("#.0000");
-                resultString += ("PSNR: " + df.format(PSNR.psnr(originBitmap, restoreBitmap[0])) + "\n");
-                //TODO 检测篡改位置
-                whereImage.setImageBitmap(restoreBitmap[1]);
+//
+//                restoreBitmap = Joint_de.joint_de(resultBitmap, originHight, originWidth, m, n, resultBitmapArray[0], key2);
+//                decodeResultImage.setImageBitmap(restoreBitmap[0]);
+//                java.text.DecimalFormat df = new java.text.DecimalFormat("#.0000");
+//                resultString += ("PSNR: " + df.format(PSNR.psnr(originBitmap, restoreBitmap[0])) + "\n");
+//                //TODO 检测篡改位置
+//                whereImage.setImageBitmap(restoreBitmap[1]);
                 break;
             case R.id.over:
                 Intent intent = new Intent(this, ChooseActivity.class);

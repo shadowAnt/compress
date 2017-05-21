@@ -71,9 +71,6 @@ public class Matlab {
         //TODO 二维分块矩阵转为二维普通矩阵
         int blockNum = I_compress[0].length;
         int blockHeight = (int) Math.ceil(height / m);//横着分可以分几块
-        int blockWidth = (int) Math.ceil(width / n);//竖着分可以分几块
-        int bigHeight = blockHeight * m;
-        int bigWidth = blockWidth * n;
         int[][] bitmap2Array = new int[height + m - 1][width + n - 1];
 //        Log.e("bigHeight  ",bigHeight + "  " +  bigWidth);
         int blockPixel = m * n;
