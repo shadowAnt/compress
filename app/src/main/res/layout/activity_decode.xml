@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
@@ -18,37 +17,38 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <LinearLayout
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="收到的加密压缩认证的图像" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
                 android:orientation="vertical"
                 android:padding="5dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="收到的加密压缩认证的图像" />
-
-
                 <pl.droidsonroids.gif.GifImageView
                     android:id="@+id/decode"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:src="@drawable/loading" />
 
             </LinearLayout>
 
-            <LinearLayout
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="用来解密的认证图像" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
                 android:orientation="vertical"
                 android:padding="5dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="用来解密的认证图像" />
 
                 <pl.droidsonroids.gif.GifImageView
                     android:id="@+id/authentic_decode"
@@ -71,24 +71,30 @@
                 android:layout_marginTop="5dp"
                 android:background="#696969" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="篡改位置：" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:text="篡改位置：" />
+                    android:gravity="center">
 
-                <pl.droidsonroids.gif.GifImageView
-                    android:id="@+id/where"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:src="@drawable/loading" />
+                    <pl.droidsonroids.gif.GifImageView
+                        android:id="@+id/where"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/loading" />
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -96,12 +102,19 @@
                     android:layout_margin="5dp"
                     android:text="恢复图像：" />
 
-                <pl.droidsonroids.gif.GifImageView
-                    android:id="@+id/decodeResult"
-                    android:layout_width="wrap_content"
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:src="@drawable/loading" />
+                    android:gravity="center">
+
+                    <pl.droidsonroids.gif.GifImageView
+                        android:id="@+id/decodeResult"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/loading" />
+                </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
@@ -115,12 +128,18 @@
                     android:layout_margin="5dp"
                     android:text="对比原始图像：" />
 
-                <pl.droidsonroids.gif.GifImageView
-                    android:id="@+id/originImage_decode"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:src="@drawable/loading" />
+                    android:gravity="center">
+
+                    <pl.droidsonroids.gif.GifImageView
+                        android:id="@+id/originImage_decode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/loading" />
+                </LinearLayout>
 
             </LinearLayout>
 

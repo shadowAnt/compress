@@ -33,6 +33,7 @@ public class EncodeActivity extends AppCompatActivity implements CardView.OnClic
     GifImageView resultImage;
     TextView resultText;
     Bitmap enAuthenticationBitmap = null;
+    int[][][] encodeBinaryArray = null;
     Bitmap originBitmap;
     Bitmap resultBitmap;
     InputStream is;
@@ -45,6 +46,7 @@ public class EncodeActivity extends AppCompatActivity implements CardView.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_encode);
         enAuthenticationBitmap = getIntent().getParcelableExtra("enAuthenticationBitmap");
+        encodeBinaryArray = To.BitmapToArray(enAuthenticationBitmap);
 
         choose = (Button) findViewById(R.id.changeButton_encode);
         choose.setEnabled(false);
@@ -72,18 +74,25 @@ public class EncodeActivity extends AppCompatActivity implements CardView.OnClic
             case R.id.startButton_encode:
                 //每加密一次会修改key，这里重新定义下
                 double[] key = {0.78, 3.59, Math.pow(7, 5), 0, Math.pow(2, 31) - 1, 102};
-                //TODO 开始加密 get originBitmap
-                long startMili = System.currentTimeMillis();// 当前时间对应的毫秒数
-                String resultString = "";
-                resultString += ("开始 " + startMili + "\n");
-                resultBitmap = Joint_en.joint_en(originBitmap, m, n, enAuthenticationBitmap, key);
-                long endMili = System.currentTimeMillis();
-                resultString += ("结束 " + endMili + "\n");
-                resultString += ("总耗时为：" + (endMili - startMili) + "毫秒" + "\n");
-                resultString += ("\n压缩率：" + GetCompressionRatio.getCompressionRatio(originBitmap, resultBitmap)) + "%\n";
-                resultText.setText(resultString);
+                int[][][] originArray= To.BitmapToArray(originBitmap);
+                int[][][] resultArray = To.En(originArray, m, n, encodeBinaryArray, key);
+                resultBitmap = To.ArraytoBitmap(resultArray);
                 resultImage.setImageBitmap(resultBitmap);
-                Log.e("tag----------", "对载体图像的处理");
+
+
+
+
+
+//                //TODO 开始加密 get originBitmap
+//                long startMili = System.currentTimeMillis();// 当前时间对应的毫秒数
+//                String resultString = "";
+//                resultBitmap = Joint_en.joint_en(originBitmap, m, n, enAuthenticationBitmap, key);
+//                long endMili = System.currentTimeMillis();
+//                resultString += ("总耗时为：" + (endMili - startMili) + "毫秒" + "\n");
+//                resultString += ("\n压缩率：" + GetCompressionRatio.getCompressionRatio(originBitmap, resultBitmap)) + "%\n";
+//                resultText.setText(resultString);
+//                resultImage.setImageBitmap(resultBitmap);
+//                Log.e("tag----------", "对载体图像的处理");
                 break;
             case R.id.quitButton_encode:
                 //TODO 退出

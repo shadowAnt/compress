@@ -59,11 +59,13 @@ public class AuthenticActivity extends AppCompatActivity implements CardView.OnC
     TextView resultText;
     InputStream is;
     String authenticationUrl = "ahu.bmp";
-    String resultString;
+    String resultString = "";
     double[] key = {0.78, 3.59, Math.pow(7, 5), 0, Math.pow(2, 31) - 1, 102};
     Bitmap[] EnAuthenticationBitmap;
     public static final int CHOOSE_PHOTO = 1;
     Bitmap authenticationBitmap;
+    int[][][] encodeBinaryArray = null;
+    Bitmap encodeBinaryBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,22 +99,22 @@ public class AuthenticActivity extends AppCompatActivity implements CardView.OnC
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.startButton:
-                long endMili = System.currentTimeMillis();
                 long startMili = System.currentTimeMillis();// 当前时间对应的毫秒数
-                resultString = "";
 
                 int[][][] threeArray = To.BitmapToArray(bitmap);//原始图像的三位数组
                 int[][][] binaryArray = To.RGBtoBinary(threeArray);//二值化后的三位数组
                 Bitmap binaryBitmap = To.ArraytoBitmap(binaryArray);//二值化后的Bitmap
-                twoDataAuthenticImage.setImageBitmap(binaryBitmap);
 
-                int[][][] encodeBinaryArray = To.EncodeBinaryArray(binaryArray, key);//加密后的认证图像三位数组
-                Bitmap encodeBinaryBitmap = To.ArraytoBitmap(encodeBinaryArray);//加密后的Bitmap
-                authenticResultImage.setImageBitmap(encodeBinaryBitmap);
+                encodeBinaryArray = To.EncodeBinaryArray(binaryArray, key);//加密后的认证图像三维数组
+                encodeBinaryBitmap = To.ArraytoBitmap(encodeBinaryArray);//加密后的Bitmap
 
+                long endMili = System.currentTimeMillis();
                 resultString += ("总耗时为：" + (endMili - startMili) + "毫秒" + "\n");
                 resultText.setText(resultString);
+                twoDataAuthenticImage.setImageBitmap(binaryBitmap);
+                authenticResultImage.setImageBitmap(encodeBinaryBitmap);
                 break;
+
             case R.id.changeButton:
                 //TODO 更换处理的认证图像 从图库中获取
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -121,13 +123,15 @@ public class AuthenticActivity extends AppCompatActivity implements CardView.OnC
                     openAlbum();
                 }
                 break;
+
             case R.id.quitButton:
                 //TODO 结束退出
                 finish();
                 break;
+
             case R.id.nextButton:
-                //TODO 传递EnAuthenticationBitmap[0]过去 待嵌入的认证图像
-                if (EnAuthenticationBitmap == null) {
+                //TODO 传递待嵌入的认证图像过去
+                if (encodeBinaryArray == null) {
                     LemonHello.getErrorHello("发生错误", "还未对待嵌入的认证图像进行处理！")
                             .addAction(new LemonHelloAction("关闭", new LemonHelloActionDelegate() {
                                 @Override
@@ -139,9 +143,10 @@ public class AuthenticActivity extends AppCompatActivity implements CardView.OnC
                     break;
                 }
                 Intent intent1 = new Intent(this, EncodeActivity.class);
-                intent1.putExtra("enAuthenticationBitmap", EnAuthenticationBitmap[0]);
+                intent1.putExtra("enAuthenticationBitmap", encodeBinaryBitmap);
                 startActivity(intent1);
                 break;
+
             default:
                 break;
         }
@@ -245,7 +250,14 @@ public class AuthenticActivity extends AppCompatActivity implements CardView.OnC
     private void displayImage(String imagePath) {
         if (imagePath != null) {
             bitmap = BitmapFactory.decodeFile(imagePath);
+            resultString = "";
+            resultString += "认证图像位置:\n    " + imagePath + "\n";
             authentic.setImageBitmap(bitmap);
+            long fileSize = new File(imagePath).length();
+            java.text.DecimalFormat df = new java.text.DecimalFormat("#.00");
+            String fileSizeString = df.format(fileSize / 1024.00);
+            resultString += "认证图像大小： " + fileSizeString + " kb\n";
+            resultText.setText(resultString);
         } else {
             Toast.makeText(this, "获取图片失败", Toast.LENGTH_SHORT).show();
         }

@@ -17,9 +17,15 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="选择认证图像：" />
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:gravity="center">
 
                 <ImageView
                     android:id="@+id/originImage"
@@ -27,25 +33,27 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/peppers" />
 
-                <LinearLayout
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/changeButton_encode"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:orientation="vertical">
+                    android:text="更换图片" />
 
-                    <Button
-                        android:id="@+id/changeButton_encode"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="更换图片" />
-
-                    <Button
-                        android:id="@+id/startButton_encode"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="开始处理" />
-                </LinearLayout>
+                <Button
+                    android:id="@+id/startButton_encode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="开始处理" />
             </LinearLayout>
+
 
             <View
                 android:layout_width="match_parent"

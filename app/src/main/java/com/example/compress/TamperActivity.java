@@ -23,6 +23,7 @@ public class TamperActivity extends AppCompatActivity implements CardView.OnClic
     Button next;
     TextView resultText;
     Bitmap resultBitmap;
+    Bitmap sendBitmap;
     int originWidth;
     int originHight;
 
@@ -59,11 +60,19 @@ public class TamperActivity extends AppCompatActivity implements CardView.OnClic
                 break;
             case R.id.startButton_tamper:
                 //TODO 开始篡改
-                resultBitmap = Tamper.tamper(resultBitmap, 121, 140, 121, 140, 255);
-                resultBitmap = Tamper.tamper(resultBitmap, 1, 20, 1, 20, 0);
-                resultBitmap = Tamper.tamper(resultBitmap, 237, 256, 1, 20, 0);
-                resultBitmap = Tamper.tamper(resultBitmap, 1, 20, 237, 256, 0);
-                resultBitmap = Tamper.tamper(resultBitmap, 237, 256, 237, 256, 0);
+                int[][][] resultArray = To.BitmapToArray(resultBitmap);
+                resultArray = To.tamper(resultArray, 121, 140, 121, 140, 255);
+                resultArray = To.tamper(resultArray, 1, 20, 1, 20, 0);
+                resultArray = To.tamper(resultArray, 237, 256, 1, 20, 0);
+                resultArray = To.tamper(resultArray, 1, 20, 237, 256, 0);
+                resultArray = To.tamper(resultArray, 237, 256, 237, 256, 0);
+                resultBitmap = To.ArraytoBitmap(resultArray);
+
+//                resultBitmap = Tamper.tamper(resultBitmap, 121, 140, 121, 140, 255);
+//                resultBitmap = Tamper.tamper(resultBitmap, 1, 20, 1, 20, 0);
+//                resultBitmap = Tamper.tamper(resultBitmap, 237, 256, 1, 20, 0);
+//                resultBitmap = Tamper.tamper(resultBitmap, 1, 20, 237, 256, 0);
+//                resultBitmap = Tamper.tamper(resultBitmap, 237, 256, 237, 256, 0);
                 attackResultImage.setImageBitmap(resultBitmap);
                 skipButton.setEnabled(false);
                 break;

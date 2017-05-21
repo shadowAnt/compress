@@ -41,4 +41,5 @@ dependencies {
     compile 'info.hoang8f:fbutton:1.0.5'
 
     compile 'com.github.1em0nsOft:LemonHello4Android:1.0.1'
+    compile 'com.github.1em0nsOft:LemonBubble4Android:1.0.13'
 }

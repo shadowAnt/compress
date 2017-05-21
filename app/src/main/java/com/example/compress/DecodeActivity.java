@@ -47,6 +47,7 @@ public class DecodeActivity extends AppCompatActivity implements CardView.OnClic
     String originUrl = "peppers.bmp";
     int originWidth;
     int originHight;
+    Bitmap authenticationBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,38 +74,25 @@ public class DecodeActivity extends AppCompatActivity implements CardView.OnClic
         originBitmap = loadAnyImage(originUrl);
         originBitmap = ConvertGreyImg.convertGreyImg(originBitmap);
         originImage.setImageBitmap(originBitmap);
+        authenticationBitmap = loadAnyImage(authenticationUrl);
+        authenticImage.setImageBitmap(authenticationBitmap);
     }
 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.startButton_decode:
-                Bitmap authenticationBitmap = loadAnyImage(authenticationUrl);
-                authenticImage.setImageBitmap(authenticationBitmap);
-                long startMili = System.currentTimeMillis();// 当前时间对应的毫秒数
-                resultString = "";
-                resultString += ("开始处理认证图像 " + startMili + "\n");
+
                 Bitmap tempBitmap = ConvertGreyImg.convertGreyImg(authenticationBitmap);
                 double[] key = {0.78, 3.59, Math.pow(7, 5), 0, Math.pow(2, 31) - 1, 102};
                 resultBitmapArray = Authentication_codes.authentication_codes(tempBitmap, key);
-                long endMili = System.currentTimeMillis();
-                resultString += ("认证图像结束 " + endMili + "\n");
-                resultString += ("认证图像总耗时为：" + (endMili - startMili) + " 毫秒" + "\n\n");
-                resultText.setText(resultString);
 
                 double[] key2 = {0.78, 3.59, Math.pow(7, 5), 0, Math.pow(2, 31) - 1, 102};
-                startMili = System.currentTimeMillis();// 当前时间对应的毫秒数
-                resultString += ("开始解密解压缩 " + startMili + "\n");
                 restoreBitmap = Joint_de.joint_de(resultBitmap, originHight, originWidth, m, n, resultBitmapArray[0], key2);
-                endMili = System.currentTimeMillis();
-                resultString += ("解密解压缩图像结束 " + endMili + "\n");
-                resultString += ("解密解压缩总耗时为：" + (endMili - startMili) + " 毫秒" + "\n\n");
                 decodeResultImage.setImageBitmap(restoreBitmap[0]);
                 java.text.DecimalFormat df = new java.text.DecimalFormat("#.0000");
                 resultString += ("PSNR: " + df.format(PSNR.psnr(originBitmap, restoreBitmap[0])) + "\n");
-                Log.e("tag----------", "对收到图像解码完成");
                 //TODO 检测篡改位置
                 whereImage.setImageBitmap(restoreBitmap[1]);
-                resultText.setText(resultString);
                 break;
             case R.id.over:
                 Intent intent = new Intent(this, ChooseActivity.class);

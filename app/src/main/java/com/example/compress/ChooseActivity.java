@@ -80,6 +80,26 @@ public class ChooseActivity extends AppCompatActivity implements CardView.OnClic
                 break;
             case R.id.tamper:
                 //TODO 篡改
+                LemonHello.getInformationHello("选择", "传输过程是否要模拟篡改？")
+                        .addAction(new LemonHelloAction("安全传输", new LemonHelloActionDelegate() {
+                            @Override
+                            public void onClick(LemonHelloView helloView, LemonHelloInfo helloInfo, LemonHelloAction helloAction) {
+                                helloView.hide();
+                            }
+                        }))
+                        .addAction(new LemonHelloAction("篡改", Color.RED, new LemonHelloActionDelegate() {
+                            @Override
+                            public void onClick(LemonHelloView helloView, LemonHelloInfo helloInfo, LemonHelloAction helloAction) {
+                                helloView.hide();
+                            }
+                        }))
+                        .addAction(new LemonHelloAction("取消", Color.BLACK, new LemonHelloActionDelegate() {
+                            @Override
+                            public void onClick(LemonHelloView helloView, LemonHelloInfo helloInfo, LemonHelloAction helloAction) {
+                                helloView.hide();
+                            }
+                        }))
+                        .show(this);
                 break;
             case R.id.de:
                 //TODO 解密
