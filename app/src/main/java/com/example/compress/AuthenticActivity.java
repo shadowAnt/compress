@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
@@ -29,6 +30,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.apkfuns.xprogressdialog.XProgressDialog;
 import com.example.compress.util.Authentication_codes;
 import com.example.compress.util.ConvertGreyImg;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
@@ -63,19 +65,19 @@ public class AuthenticActivity extends AppCompatActivity implements CardView.OnC
     String authenticationUrl = "ahu.bmp";
     String resultString = "";
     double[] key = {0.78, 3.59, Math.pow(7, 5), 0, Math.pow(2, 31) - 1, 102};
-    Bitmap[] EnAuthenticationBitmap;
     public static final int CHOOSE_PHOTO = 1;
     Bitmap authenticationBitmap;
     int[][][] encodeBinaryArray = null;
     Bitmap encodeBinaryBitmap;
+    private Handler handler = new Handler();
+    XProgressDialog dialog;
+    Bitmap binaryBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            //透明状态栏
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            //透明导航栏
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         }
         setContentView(R.layout.activity_authentic);
@@ -105,20 +107,33 @@ public class AuthenticActivity extends AppCompatActivity implements CardView.OnC
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.startButton:
-                long startMili = System.currentTimeMillis();// 当前时间对应的毫秒数
+                dialog = new XProgressDialog(this, "正在处理图像...", XProgressDialog.THEME_CIRCLE_PROGRESS);
+                dialog.show();
+                new Thread() {
+                    public void run() {
+                        long startMili = System.currentTimeMillis();// 当前时间对应的毫秒数
 
-                int[][][] threeArray = To.BitmapToArray(bitmap);//原始图像的三位数组
-                int[][][] binaryArray = To.RGBtoBinary(threeArray);//二值化后的三位数组
-                Bitmap binaryBitmap = To.ArraytoBitmap(binaryArray);//二值化后的Bitmap
+                        int[][][] threeArray = To.BitmapToArray(bitmap);//原始图像的三位数组
+                        int[][][] binaryArray = To.RGBtoBinary(threeArray);//二值化后的三位数组
+                        binaryBitmap = To.ArraytoBitmap(binaryArray);//二值化后的Bitmap
 
-                encodeBinaryArray = To.EncodeBinaryArray(binaryArray, key);//加密后的认证图像三维数组
-                encodeBinaryBitmap = To.ArraytoBitmap(encodeBinaryArray);//加密后的Bitmap
+                        encodeBinaryArray = To.EncodeBinaryArray(binaryArray, key);//加密后的认证图像三维数组
+                        encodeBinaryBitmap = To.ArraytoBitmap(encodeBinaryArray);//加密后的Bitmap
 
-                long endMili = System.currentTimeMillis();
-                resultString += ("总耗时为：" + (endMili - startMili) + "毫秒" + "\n");
-                resultText.setText(resultString);
-                twoDataAuthenticImage.setImageBitmap(binaryBitmap);
-                authenticResultImage.setImageBitmap(encodeBinaryBitmap);
+                        long endMili = System.currentTimeMillis();
+                        resultString += ("总耗时为：" + (endMili - startMili) + "毫秒" + "\n");
+                        handler.post(new Runnable() {    // 在新线程中使用Handler向主线程发送一段代码, 主线程自动执行run()方法
+                            public void run() {
+                                resultText.setText(resultString);
+                                twoDataAuthenticImage.setImageBitmap(binaryBitmap);
+                                authenticResultImage.setImageBitmap(encodeBinaryBitmap);
+                                GlobalVaries globalVaries = (GlobalVaries) getApplication();
+                                globalVaries.setEncodeBinaryBitmap(encodeBinaryBitmap);
+                                dialog.dismiss();
+                            }
+                        });
+                    }
+                }.start();
                 break;
 
             case R.id.changeButton:
@@ -149,8 +164,8 @@ public class AuthenticActivity extends AppCompatActivity implements CardView.OnC
                     break;
                 }
                 Intent intent1 = new Intent(this, EncodeActivity.class);
-                intent1.putExtra("enAuthenticationBitmap", encodeBinaryBitmap);
                 startActivity(intent1);
+                finish();
                 break;
 
             default:

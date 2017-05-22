@@ -30,7 +30,7 @@ public class ChooseActivity extends AppCompatActivity implements CardView.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //TODO 顶部融为一体
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             //透明状态栏
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             //透明导航栏
@@ -50,7 +50,6 @@ public class ChooseActivity extends AppCompatActivity implements CardView.OnClic
         toolbar.setTitle("压缩加密认证联合编码系统");
         toolbar.setTitleTextColor(Color.parseColor("#ecf0f1"));
         setSupportActionBar(toolbar);
-
 
 
         CardView enButton = (CardView) findViewById(R.id.en);
@@ -94,29 +93,51 @@ public class ChooseActivity extends AppCompatActivity implements CardView.OnClic
                 break;
             case R.id.tamper:
                 //TODO 篡改
-                LemonHello.getInformationHello("选择", "传输过程是否要模拟篡改？")
-                        .addAction(new LemonHelloAction("安全传输", new LemonHelloActionDelegate() {
-                            @Override
-                            public void onClick(LemonHelloView helloView, LemonHelloInfo helloInfo, LemonHelloAction helloAction) {
-                                helloView.hide();
-                            }
-                        }))
-                        .addAction(new LemonHelloAction("篡改", Color.RED, new LemonHelloActionDelegate() {
-                            @Override
-                            public void onClick(LemonHelloView helloView, LemonHelloInfo helloInfo, LemonHelloAction helloAction) {
-                                helloView.hide();
-                            }
-                        }))
-                        .addAction(new LemonHelloAction("取消", Color.BLACK, new LemonHelloActionDelegate() {
-                            @Override
-                            public void onClick(LemonHelloView helloView, LemonHelloInfo helloInfo, LemonHelloAction helloAction) {
-                                helloView.hide();
-                            }
-                        }))
-                        .show(this);
+                GlobalVaries globalVaries = (GlobalVaries) getApplication();
+                if (globalVaries.getEn()) {
+                    LemonHello.getInformationHello("选择", "传输过程是否要模拟篡改？")
+                            .addAction(new LemonHelloAction("篡改", Color.RED, new LemonHelloActionDelegate() {
+                                @Override
+                                public void onClick(LemonHelloView helloView, LemonHelloInfo helloInfo, LemonHelloAction helloAction) {
+                                    Intent intent1 = new Intent(ChooseActivity.this, TamperActivity.class);
+                                    startActivity(intent1);
+                                    helloView.hide();
+                                }
+                            }))
+                            .addAction(new LemonHelloAction("取消", Color.BLACK, new LemonHelloActionDelegate() {
+                                @Override
+                                public void onClick(LemonHelloView helloView, LemonHelloInfo helloInfo, LemonHelloAction helloAction) {
+                                    helloView.hide();
+                                }
+                            }))
+                            .show(this);
+                } else {
+                    LemonHello.getErrorHello("错误！", "您还没有进行加密传输，请先点击压缩嵌入按钮！")
+                            .addAction(new LemonHelloAction("明白", Color.RED, new LemonHelloActionDelegate() {
+                                @Override
+                                public void onClick(LemonHelloView helloView, LemonHelloInfo helloInfo, LemonHelloAction helloAction) {
+                                    helloView.hide();
+                                }
+                            }))
+                            .show(this);
+                }
                 break;
             case R.id.de:
                 //TODO 解密
+                GlobalVaries globalVaries1 = (GlobalVaries) getApplication();
+                if (globalVaries1.getTamper()) {
+                    Intent intent2 = new Intent(this, DecodeActivity.class);
+                    startActivity(intent2);
+                } else {
+                    LemonHello.getErrorHello("错误！", "您还没有选择篡改与否，请先点击传输按钮！")
+                            .addAction(new LemonHelloAction("明白", Color.RED, new LemonHelloActionDelegate() {
+                                @Override
+                                public void onClick(LemonHelloView helloView, LemonHelloInfo helloInfo, LemonHelloAction helloAction) {
+                                    helloView.hide();
+                                }
+                            }))
+                            .show(this);
+                }
                 break;
             default:
                 break;

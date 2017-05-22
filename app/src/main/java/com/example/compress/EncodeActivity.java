@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
@@ -28,6 +29,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.apkfuns.xprogressdialog.XProgressDialog;
 import com.example.compress.util.GetCompressionRatio;
 import com.example.compress.util.Joint_en;
 import com.example.compress.util.Tamper;
@@ -64,11 +66,14 @@ public class EncodeActivity extends AppCompatActivity implements CardView.OnClic
     String originUrl = "lena.bmp";
     String resultString = "";
     public static final int CHOOSE_PHOTO = 1;
+    XProgressDialog dialog;
+    private Handler handler = new Handler();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             //透明状态栏
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             //透明导航栏
@@ -79,7 +84,9 @@ public class EncodeActivity extends AppCompatActivity implements CardView.OnClic
         tintManager.setStatusBarTintEnabled(true);
         tintManager.setNavigationBarTintEnabled(true);
 
-        enAuthenticationBitmap = getIntent().getParcelableExtra("enAuthenticationBitmap");
+        GlobalVaries globalVaries = (GlobalVaries) getApplication();
+        enAuthenticationBitmap = globalVaries.getEncodeBinaryBitmap();
+
         encodeBinaryArray = To.BitmapToArray(enAuthenticationBitmap);
         ScrollView scrollView = (ScrollView) findViewById(R.id.scrollEncode);
         scrollView.setVerticalScrollBarEnabled(false);
@@ -110,11 +117,25 @@ public class EncodeActivity extends AppCompatActivity implements CardView.OnClic
                 }
                 break;
             case R.id.startButton_encode:
-                double[] key = {0.78, 3.59, Math.pow(7, 5), 0, Math.pow(2, 31) - 1, 102};
-                int[][][] originArray= To.BitmapToArray(originBitmap);
-                int[][][] resultArray = To.En(originArray, m, n, encodeBinaryArray, key);//(int) Math.ceil(height / m) * 2;
-                resultBitmap = To.ArraytoBitmap(resultArray);
-                resultImage.setImageBitmap(resultBitmap);
+                dialog = new XProgressDialog(this, "正在处理图像...", XProgressDialog.THEME_CIRCLE_PROGRESS);
+                dialog.show();
+                new Thread() {
+                    public void run() {
+                        double[] key = {0.78, 3.59, Math.pow(7, 5), 0, Math.pow(2, 31) - 1, 102};
+                        int[][][] originArray = To.BitmapToArray(originBitmap);
+                        int[][][] resultArray = To.En(originArray, m, n, encodeBinaryArray, key);//(int) Math.ceil(height / m) * 2;
+                        resultBitmap = To.ArraytoBitmap(resultArray);
+                        handler.post(new Runnable() {    // 在新线程中使用Handler向主线程发送一段代码, 主线程自动执行run()方法
+                            public void run() {
+                                resultImage.setImageBitmap(resultBitmap);
+                                GlobalVaries globalVaries = (GlobalVaries) getApplication();
+                                globalVaries.setResultBitmap(resultBitmap);
+                                globalVaries.setEn(true);
+                                dialog.dismiss();
+                            }
+                        });
+                    }
+                }.start();
                 break;
             case R.id.quitButton_encode:
                 //TODO 退出
@@ -137,11 +158,13 @@ public class EncodeActivity extends AppCompatActivity implements CardView.OnClic
                 }
                 int originHight = originBitmap.getHeight();
                 int originWidth = originBitmap.getWidth();
-                Intent intent1 = new Intent(this, TamperActivity.class);
-                intent1.putExtra("resultBitmap", resultBitmap);
-                intent1.putExtra("originHight", originHight);
-                intent1.putExtra("originWidth", originWidth);
-                startActivity(intent1);
+
+                GlobalVaries globalVaries = (GlobalVaries) getApplication();
+                globalVaries.setOriginHeight(originHight);
+                globalVaries.setOriginWidth(originWidth);
+                finish();
+//                Intent intent1 = new Intent(this, TamperActivity.class);
+//                startActivity(intent1);
                 break;
             default:
                 break;
