@@ -428,8 +428,6 @@ public class To {
             dec[0] = group4[2];
             dec[1] = group4[3];
             group4 = Embed.embed(a, b, dec, enAuthenticationArray[j]);     //嵌入认证信息
-            if (j == 0 || j == 1)
-                System.out.println("嵌入认证信息之后的四元组  " + Arrays.toString(group4));
             I_compress[0][j] = group4[0];
             I_compress[1][j] = group4[1];
             I_compress[2][j] = group4[2];
@@ -492,11 +490,21 @@ public class To {
                 ans[i][j][3] = array[i][j][3];
             }
         }
-        for (int i = oh; i < eh; i++) {
-            for (int j = ow; j < ew; j++) {
-                ans[i][j][1] = pix;
-                ans[i][j][2] = pix;
-                ans[i][j][3] = pix;
+        if (oh > height || eh > height || ow > width || ew > width) {
+            for (int i = 0; i < height / 2; i++) {
+                for (int j = 0; j < width / 2; j++) {
+                    ans[i][j][1] = pix;
+                    ans[i][j][2] = pix;
+                    ans[i][j][3] = pix;
+                }
+            }
+        } else {
+            for (int i = oh; i < eh; i++) {
+                for (int j = ow; j < ew; j++) {
+                    ans[i][j][1] = pix;
+                    ans[i][j][2] = pix;
+                    ans[i][j][3] = pix;
+                }
             }
         }
         return ans;

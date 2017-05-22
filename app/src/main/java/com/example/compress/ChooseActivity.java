@@ -12,6 +12,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+
+import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import net.lemonsoft.lemonhello.LemonHello;
 import net.lemonsoft.lemonhello.LemonHelloAction;
@@ -27,17 +30,28 @@ public class ChooseActivity extends AppCompatActivity implements CardView.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //TODO 顶部融为一体
-        if (Build.VERSION.SDK_INT >= 21) {
-            View decorView = getWindow().getDecorView();
-            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            //透明状态栏
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            //透明导航栏
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         }
         setContentView(R.layout.activity_choose);
+
+//        SystemBarTintManager tintManager = new SystemBarTintManager(this);
+//        // enable status bar tint
+//        tintManager.setStatusBarTintEnabled(true);
+//        tintManager.setTintColor(Color.parseColor("#2980b9"));
+//        // enable navigation bar tint
+//        tintManager.setNavigationBarTintEnabled(true);
+
         //TODO 加载ToolBar 设置标题及字体颜色
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("压缩加密认证联合编码系统");
         toolbar.setTitleTextColor(Color.parseColor("#ecf0f1"));
         setSupportActionBar(toolbar);
+
+
 
         CardView enButton = (CardView) findViewById(R.id.en);
         CardView deButton = (CardView) findViewById(R.id.de);

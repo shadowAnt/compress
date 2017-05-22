@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ScrollView;
@@ -30,6 +31,7 @@ import android.widget.Toast;
 
 import com.example.compress.util.Authentication_codes;
 import com.example.compress.util.ConvertGreyImg;
+import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import net.lemonsoft.lemonhello.LemonHello;
 import net.lemonsoft.lemonhello.LemonHelloAction;
@@ -70,13 +72,17 @@ public class AuthenticActivity extends AppCompatActivity implements CardView.OnC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //TODO 顶部融为一体
-        if (Build.VERSION.SDK_INT >= 21) {
-            View decorView = getWindow().getDecorView();
-            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            //透明状态栏
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            //透明导航栏
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         }
         setContentView(R.layout.activity_authentic);
+        SystemBarTintManager tintManager = new SystemBarTintManager(this);
+        tintManager.setStatusBarTintEnabled(true);
+        tintManager.setNavigationBarTintEnabled(true);
+
         choose = (Button) findViewById(R.id.changeButton);
         choose.setOnClickListener(this);
         start = (Button) findViewById(R.id.startButton);
@@ -101,7 +107,7 @@ public class AuthenticActivity extends AppCompatActivity implements CardView.OnC
             case R.id.startButton:
                 long startMili = System.currentTimeMillis();// 当前时间对应的毫秒数
 
-                int[][][] threeArray = To.BitmapToArray(authenticationBitmap);//原始图像的三位数组
+                int[][][] threeArray = To.BitmapToArray(bitmap);//原始图像的三位数组
                 int[][][] binaryArray = To.RGBtoBinary(threeArray);//二值化后的三位数组
                 Bitmap binaryBitmap = To.ArraytoBitmap(binaryArray);//二值化后的Bitmap
 
@@ -251,7 +257,7 @@ public class AuthenticActivity extends AppCompatActivity implements CardView.OnC
         if (imagePath != null) {
             bitmap = BitmapFactory.decodeFile(imagePath);
             resultString = "";
-            resultString += "认证图像位置:\n    " + imagePath + "\n";
+            resultString += "认证图像位置:    " + imagePath + "\n";
             authentic.setImageBitmap(bitmap);
             long fileSize = new File(imagePath).length();
             java.text.DecimalFormat df = new java.text.DecimalFormat("#.00");

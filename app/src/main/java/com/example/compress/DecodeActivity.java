@@ -3,21 +3,25 @@ package com.example.compress;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.apkfuns.xprogressdialog.XProgressDialog;
 import com.example.compress.util.Authentication_codes;
 import com.example.compress.util.ConvertGreyImg;
 import com.example.compress.util.Joint_de;
 import com.example.compress.util.PSNR;
 import com.example.compress.util.Tamper;
+import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,7 +56,17 @@ public class DecodeActivity extends AppCompatActivity implements CardView.OnClic
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            //透明状态栏
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            //透明导航栏
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        }
         setContentView(R.layout.activity_decode);
+        SystemBarTintManager tintManager = new SystemBarTintManager(this);
+        tintManager.setStatusBarTintEnabled(true);
+        tintManager.setNavigationBarTintEnabled(true);
+
         resultBitmap = getIntent().getParcelableExtra("resultBitmap");
         originWidth = getIntent().getIntExtra("originWidth", 0);
         originHight = getIntent().getIntExtra("originHight", 0);
@@ -80,6 +94,10 @@ public class DecodeActivity extends AppCompatActivity implements CardView.OnClic
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.startButton_decode:
+
+                XProgressDialog dialog = new XProgressDialog(this, "正在处理图像...", XProgressDialog.THEME_CIRCLE_PROGRESS);
+                dialog.show();
+
                 double[] key = {0.78, 3.59, Math.pow(7, 5), 0, Math.pow(2, 31) - 1, 102};
                 //TODO 处理认证图像
                 int[][][] threeArray = To.BitmapToArray(authenticationBitmap);//原始图像的三位数组
@@ -95,7 +113,7 @@ public class DecodeActivity extends AppCompatActivity implements CardView.OnClic
                 decodeResultImage.setImageBitmap(icBitmap);
                 whereImage.setImageBitmap(ic2Bitmap);
 
-//
+                dialog.dismiss();
 //                restoreBitmap = Joint_de.joint_de(resultBitmap, originHight, originWidth, m, n, resultBitmapArray[0], key2);
 //                decodeResultImage.setImageBitmap(restoreBitmap[0]);
 //                java.text.DecimalFormat df = new java.text.DecimalFormat("#.0000");

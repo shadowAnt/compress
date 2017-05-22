@@ -2,14 +2,18 @@ package com.example.compress;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.compress.util.Tamper;
+import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import pl.droidsonroids.gif.GifImageView;
 
@@ -30,11 +34,23 @@ public class TamperActivity extends AppCompatActivity implements CardView.OnClic
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            //透明状态栏
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            //透明导航栏
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        }
         setContentView(R.layout.activity_tamper);
+        SystemBarTintManager tintManager = new SystemBarTintManager(this);
+        tintManager.setStatusBarTintEnabled(true);
+        tintManager.setNavigationBarTintEnabled(true);
+
         resultBitmap = getIntent().getParcelableExtra("resultBitmap");
         originWidth = getIntent().getIntExtra("originWidth", 0);
         originHight = getIntent().getIntExtra("originHight", 0);
 
+        ScrollView scrollView = (ScrollView) findViewById(R.id.scrollTamper);
+        scrollView.setVerticalScrollBarEnabled(false);
         attackImage = (GifImageView) findViewById(R.id.attack);
         attackResultImage = (GifImageView) findViewById(R.id.attackResult);
         start = (Button) findViewById(R.id.startButton_tamper);
