@@ -26,9 +26,9 @@ public class My_bin2dec {
         for (int i = 0; i < len - n + 1; i += n) {
             int temp = 0;
             for (int j = i; j < i + n; j++) {
-                temp += bin[j] * Math.pow(2, j % n);
+                temp += bin[j] * Math.pow(2, (j - 1) % n);
             }
-            dec[(int) Math.ceil(i / n)] = temp;
+            dec[(int) Math.ceil(i / (double) n)] = temp;
         }
         return dec;
     }

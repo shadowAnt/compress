@@ -14,7 +14,7 @@ public final class GlobalVaries extends Application {
     private Boolean isEn = false;
     private Boolean isTamper = false;
 
-    public void toNull(){
+    public void toNull(){//清零
         encodeBinaryBitmap = null;
         resultBitmap = null;
         tamperResultBitmap = null;

@@ -128,7 +128,6 @@ public class To {
         for (int i = 0; i < len; i++) {
             cpyKey[i] = key[i];
         }
-
         int height = array.length;
         int width = array[0].length;
         int num = height * width;
@@ -309,16 +308,16 @@ public class To {
                     Ic2[k][j] = 255;
                 }
             }
-            //TODO 为直接解压缩保留
-            int[] bitmap2 = My_dec2bin.my_dec2bin(dec, 8);
-            for (int k = 0; k < m * n; k++) {
-                if (bitmap2[k] == 0) {
-                    temp_bitmap[k] = a;
-                }
-                if (bitmap2[k] == 1) {
-                    temp_bitmap[k] = b;
-                }
-            }
+//            //TODO 为直接解压缩保留
+//            int[] bitmap2 = My_dec2bin.my_dec2bin(dec, 8);
+//            for (int k = 0; k < m * n; k++) {
+//                if (bitmap2[k] == 0) {
+//                    temp_bitmap[k] = a;
+//                }
+//                if (bitmap2[k] == 1) {
+//                    temp_bitmap[k] = b;
+//                }
+//            }
             //  解密
             cpyKey[5] = xor_key[j];
             int[] group4 = Decryption.decrption(a, b, dec, cpyKey);
@@ -401,18 +400,18 @@ public class To {
         int blockNum = array[0].length;//列数 即是块数
         double[] xor_key = Rand_numbers.Rand_numbers(cpyKey, blockNum, 256);
         double[] sequence = Chaotic.chaotic_maping_sequence(cpyKey[0], cpyKey[1], blockNum);
-        int[] bitmap = new int[m * n];//一块的16个像素矩阵
-        int[][] I_compress = new int[4][blockNum];//返回结果
         int sumPixel = m * n;
+        int[] bitmap = new int[sumPixel];//一块的16个像素矩阵
+        int[][] I_compress = new int[4][blockNum];//返回结果
         //TODO 对每块进行处理 AMBTC
         for (int j = 0; j < blockNum; j++) {
-            int sum = 0;
+            double sum = 0;
             for (int i = 0; i < sumPixel; i++) {
                 sum += array[i][j];
             }
-            int ave = sum / sumPixel;//均值
-            int highSum = 0;
-            int lowSum = 0;
+            double ave = sum / sumPixel;//均值
+            double highSum = 0;
+            double lowSum = 0;
             int highNum = 0;
             int lowNum = 0;
             for (int i = 0; i < sumPixel; i++) {
@@ -426,14 +425,14 @@ public class To {
                     bitmap[i] = 0;
                 }
             }
-            int b = highSum / highNum;   //高均值
+            int b = (int) Math.round(highSum / highNum);   //高均值
             int a;
             if (highNum == sumPixel) {
                 a = b;
             } else {//这里不会出现除以0的情况
-                a = lowSum / lowNum;  //低均值
+                a = (int) Math.round(lowSum / lowNum);  //低均值
             }
-            bitmap = My_rand.my_rand(bitmap, sequence[j], cpyKey[1], j);
+            bitmap = My_rand.my_rand(bitmap, sequence[j], cpyKey[1]);
             int[] dec = My_bin2dec.my_bin2dec(bitmap, 8);
             double[] keyTemp = new double[len];//复制key
             for (int i = 0; i < len; i++) {

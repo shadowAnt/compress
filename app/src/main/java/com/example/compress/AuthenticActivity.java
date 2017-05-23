@@ -127,7 +127,6 @@ public class AuthenticActivity extends AppCompatActivity implements CardView.OnC
                     }
                 }.start();
                 break;
-
             case R.id.changeButton:
                 //TODO 更换处理的认证图像 从图库中获取
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -136,12 +135,10 @@ public class AuthenticActivity extends AppCompatActivity implements CardView.OnC
                     openAlbum();
                 }
                 break;
-
             case R.id.quitButton:
                 //TODO 结束退出
                 finish();
                 break;
-
             case R.id.nextButton:
                 //TODO 传递待嵌入的认证图像过去
                 if (encodeBinaryArray == null) {
@@ -159,7 +156,6 @@ public class AuthenticActivity extends AppCompatActivity implements CardView.OnC
                 startActivity(intent1);
                 finish();
                 break;
-
             default:
                 break;
         }

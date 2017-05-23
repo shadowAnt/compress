@@ -47,8 +47,6 @@ public class TamperActivity extends AppCompatActivity implements CardView.OnClic
         tintManager.setNavigationBarTintEnabled(true);
 
         GlobalVaries globalVaries = (GlobalVaries) getApplication();
-        originHight = globalVaries.getOriginHeight();
-        originWidth = globalVaries.getOriginWidth();
         resultBitmap = globalVaries.getResultBitmap();
 
         ScrollView scrollView = (ScrollView) findViewById(R.id.scrollTamper);
