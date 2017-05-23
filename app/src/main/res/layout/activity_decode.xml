@@ -46,6 +46,12 @@
                 android:layout_height="wrap_content"
                 android:text="用来解密的认证图像:" />
 
+            <Button
+                android:id="@+id/choose_authentic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="选择认证图像" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -135,6 +141,12 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:text="对比原始图像：" />
+
+                <Button
+                    android:id="@+id/choose_origin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="对比初始图像" />
 
                 <LinearLayout
                     android:layout_width="match_parent"

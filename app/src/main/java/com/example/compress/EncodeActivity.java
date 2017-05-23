@@ -3,12 +3,12 @@ package com.example.compress;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.ContentUris;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
@@ -16,7 +16,6 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -30,9 +29,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.apkfuns.xprogressdialog.XProgressDialog;
-import com.example.compress.util.GetCompressionRatio;
-import com.example.compress.util.Joint_en;
-import com.example.compress.util.Tamper;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import net.lemonsoft.lemonhello.LemonHello;
@@ -63,7 +59,7 @@ public class EncodeActivity extends AppCompatActivity implements CardView.OnClic
     InputStream is;
     int m = 4;
     int n = 4;
-    String originUrl = "lena.bmp";
+    String originUrl = "peppers.bmp";
     String resultString = "";
     public static final int CHOOSE_PHOTO = 1;
     XProgressDialog dialog;
@@ -144,16 +140,14 @@ public class EncodeActivity extends AppCompatActivity implements CardView.OnClic
             case R.id.nextButton_encode:
                 //TODO 下一步
                 if (resultBitmap == null) {
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-                    dialog.setTitle("错误！");
-                    dialog.setMessage("还未进行压缩加密认证处理！");
-                    dialog.setCancelable(false);
-                    dialog.setNegativeButton("明白", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                        }
-                    });
-                    dialog.show();
+                    LemonHello.getErrorHello("错误！", "还未进行压缩加密认证处理！")
+                            .addAction(new LemonHelloAction("明白", Color.RED, new LemonHelloActionDelegate() {
+                                @Override
+                                public void onClick(LemonHelloView helloView, LemonHelloInfo helloInfo, LemonHelloAction helloAction) {
+                                    helloView.hide();
+                                }
+                            }))
+                            .show(this);
                     break;
                 }
                 int originHight = originBitmap.getHeight();
@@ -163,8 +157,6 @@ public class EncodeActivity extends AppCompatActivity implements CardView.OnClic
                 globalVaries.setOriginHeight(originHight);
                 globalVaries.setOriginWidth(originWidth);
                 finish();
-//                Intent intent1 = new Intent(this, TamperActivity.class);
-//                startActivity(intent1);
                 break;
             default:
                 break;

@@ -1,6 +1,5 @@
 package com.example.compress;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Handler;
@@ -14,7 +13,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.apkfuns.xprogressdialog.XProgressDialog;
-import com.example.compress.util.Tamper;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import pl.droidsonroids.gif.GifImageView;
@@ -74,6 +72,8 @@ public class TamperActivity extends AppCompatActivity implements CardView.OnClic
             case R.id.skip:
                 GlobalVaries globalVaries = (GlobalVaries) getApplication();
                 globalVaries.setTamper(true);
+                globalVaries.setTamperResultBitmap(resultBitmap);
+                attackResultImage.setImageBitmap(resultBitmap);
                 break;
             case R.id.startButton_tamper:
                 dialog = new XProgressDialog(this, "正在处理图像...", XProgressDialog.THEME_CIRCLE_PROGRESS);
@@ -94,7 +94,7 @@ public class TamperActivity extends AppCompatActivity implements CardView.OnClic
                                 GlobalVaries globalVaries = (GlobalVaries) getApplication();
                                 globalVaries.setTamper(true);
                                 globalVaries.setTamperResultBitmap(resultBitmap);
-                                skipButton.setEnabled(false);
+                                skipButton.setEnabled(false);//跳过按钮失效
                                 dialog.dismiss();
                             }
                         });

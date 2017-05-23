@@ -1,29 +1,38 @@
 package com.example.compress;
 
+import android.Manifest;
+import android.annotation.TargetApi;
+import android.content.ContentUris;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
-import android.os.SystemClock;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.apkfuns.xprogressdialog.XProgressDialog;
-import com.example.compress.util.Authentication_codes;
-import com.example.compress.util.ConvertGreyImg;
-import com.example.compress.util.Joint_de;
-import com.example.compress.util.PSNR;
-import com.example.compress.util.Tamper;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
+
+import net.lemonsoft.lemonhello.LemonHello;
+import net.lemonsoft.lemonhello.LemonHelloAction;
+import net.lemonsoft.lemonhello.LemonHelloInfo;
+import net.lemonsoft.lemonhello.LemonHelloView;
+import net.lemonsoft.lemonhello.interfaces.LemonHelloActionDelegate;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,6 +48,8 @@ public class DecodeActivity extends AppCompatActivity implements CardView.OnClic
     GifImageView authenticImage;
     Button start;
     Button overButton;
+    Button chooseAuthentic;
+    Button chooseOrigin;
     TextView resultText;
     Bitmap resultBitmap;
     Bitmap originBitmap;
@@ -55,6 +66,8 @@ public class DecodeActivity extends AppCompatActivity implements CardView.OnClic
     XProgressDialog dialog;
     Bitmap icBitmap;
     Bitmap ic2Bitmap;
+    public static final int CHOOSE_PHOTO = 1;
+    int flag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,8 +97,12 @@ public class DecodeActivity extends AppCompatActivity implements CardView.OnClic
         whereImage = (GifImageView) findViewById(R.id.where);
         start = (Button) findViewById(R.id.startButton_decode);
         overButton = (Button) findViewById(R.id.over);
+        chooseAuthentic = (Button) findViewById(R.id.choose_authentic);
+        chooseOrigin = (Button) findViewById(R.id.choose_origin);
         resultText = (TextView) findViewById(R.id.authenticText_decode);
+        chooseOrigin.setOnClickListener(this);
         start.setOnClickListener(this);
+        chooseAuthentic.setOnClickListener(this);
         overButton.setOnClickListener(this);
         //加载初始图像
         decodeImage.setImageBitmap(resultBitmap);
@@ -129,9 +146,26 @@ public class DecodeActivity extends AppCompatActivity implements CardView.OnClic
 //                resultString += ("PSNR: " + df.format(PSNR.psnr(originBitmap, restoreBitmap[0])) + "\n");
                 break;
             case R.id.over:
-                Intent intent = new Intent(this, ChooseActivity.class);
-                startActivity(intent);
+                GlobalVaries globalVaries = (GlobalVaries) getApplication();
+                globalVaries.toNull();
                 finish();
+                break;
+            case R.id.choose_authentic:
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                } else {
+                    flag = 1;
+                    openAlbum();
+                }
+                break;
+            case R.id.choose_origin:
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                } else {
+                    flag = 2;
+                    openAlbum();
+                }
+                break;
             default:
                 break;
         }
@@ -145,5 +179,104 @@ public class DecodeActivity extends AppCompatActivity implements CardView.OnClic
         }
         Bitmap bitmap = BitmapFactory.decodeStream(is);
         return bitmap;
+    }
+
+    private void openAlbum() {
+        Intent intent = new Intent("android.intent.action.GET_CONTENT");
+        intent.setType("image/*");
+        startActivityForResult(intent, CHOOSE_PHOTO);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case CHOOSE_PHOTO:
+                if (resultCode == RESULT_OK) {
+                    if (Build.VERSION.SDK_INT >= 19) {
+                        handleImageOnkitKat(data);
+                    } else {
+                        handleImageBeforeKitKat(data);
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case 1:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    openAlbum();
+                } else {
+                    LemonHello.getErrorHello("发生错误", "拒绝了访问相册请求！")
+                            .addAction(new LemonHelloAction("关闭", new LemonHelloActionDelegate() {
+                                @Override
+                                public void onClick(LemonHelloView helloView, LemonHelloInfo helloInfo, LemonHelloAction helloAction) {
+                                    helloView.hide();
+                                }
+                            }))
+                            .show(this);
+                }
+                break;
+            default:
+        }
+    }
+
+    @TargetApi(19)
+    private void handleImageOnkitKat(Intent data) {
+        String imagePath = null;
+        Uri uri = data.getData();
+        if (DocumentsContract.isDocumentUri(this, uri)) {
+            String docId = DocumentsContract.getDocumentId(uri);
+            if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
+                String id = docId.split(":")[1];
+                //解析成数字格式的id
+                String selection = MediaStore.Images.Media._ID + "=" + id;
+                imagePath = getImagePath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, selection);
+            } else if ("com.android.providers.downloads.documents".equals(uri.getAuthority())) {
+                Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(docId));
+                imagePath = getImagePath(contentUri, null);
+            }
+        } else if ("content".equalsIgnoreCase(uri.getScheme())) {
+            imagePath = getImagePath(uri, null);
+        } else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            imagePath = uri.getPath();
+        }
+        displayImage(imagePath);
+    }
+
+    private void handleImageBeforeKitKat(Intent data) {
+        Uri uri = data.getData();
+        String imagePath = getImagePath(uri, null);
+        displayImage(imagePath);
+    }
+
+    private String getImagePath(Uri uri, String selection) {
+        String path = null;
+        Cursor cursor = getContentResolver().query(uri, null, selection, null, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+            }
+            cursor.close();
+        }
+        return path;
+    }
+
+    private void displayImage(String imagePath) {
+        if (imagePath != null) {
+            if (flag == 1) {//选择认证图像
+                authenticationBitmap = BitmapFactory.decodeFile(imagePath);
+                authenticImage.setImageBitmap(authenticationBitmap);
+            } else if (flag == 2) {
+                originBitmap = BitmapFactory.decodeFile(imagePath);
+                originImage.setImageBitmap(originBitmap);
+            }
+        } else {
+            Toast.makeText(this, "获取图片失败", Toast.LENGTH_SHORT).show();
+        }
     }
 }

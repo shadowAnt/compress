@@ -1,7 +1,12 @@
 package com.example.compress;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 
 import com.example.compress.util.Chaotic;
 import com.example.compress.util.Decryption;
@@ -14,7 +19,12 @@ import com.example.compress.util.My_derand;
 import com.example.compress.util.My_rand;
 import com.example.compress.util.Rand_numbers;
 
-import java.util.Arrays;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import static android.R.attr.path;
 
 /**
  * Created by ShadowAnt on 2017/5/20.
@@ -185,11 +195,13 @@ public class To {
         int[][] IcB = To.im2col(bArray, m, n);
         //TODO 分块矩阵输入得到压缩加密的各个通道矩阵
         int[][] I_compressR = AMBTC(IcR, m, n, key, enAuthenticationArray);
+//        int[][] I_compressG = AMBTC(IcR, m, n, key, enAuthenticationArray);
+//        int[][] I_compressB = AMBTC(IcR, m, n, key, enAuthenticationArray);
         int[][] I_compressG = AMBTC(IcG, m, n, key, enAuthenticationArray);
         int[][] I_compressB = AMBTC(IcB, m, n, key, enAuthenticationArray);
         //TODO 合并图层得到三维矩阵
-        height = (int) Math.ceil(height / m) * 2;
-        width = (int) Math.ceil(width / n) * 2;
+        height = (int) Math.ceil(height / (double) m) * 2;  //5 -> 2
+        width = (int) Math.ceil(width / (double) n) * 2;
         int[][] R = To.col2im(I_compressR, 2, 2, height, width);
         int[][] G = To.col2im(I_compressG, 2, 2, height, width);
         int[][] B = To.col2im(I_compressB, 2, 2, height, width);
@@ -320,8 +332,7 @@ public class To {
             for (int k = 0; k < m * n; k++) {
                 if (longBitmap[k] == 0) {
                     temp_bitmap[k] = a;
-                }
-                if (longBitmap[k] == 1) {
+                } else if (longBitmap[k] == 1) {
                     temp_bitmap[k] = b;
                 }
             }
@@ -346,22 +357,24 @@ public class To {
     public static int[][] im2col(int[][] array, int m, int n) {
         int height = array.length;
         int width = array[0].length;
-        int blockHeight = (int) Math.ceil(height / m);//横着分可以分几块
-        int blockWidth = (int) Math.ceil(width / n);//竖着分可以分几块
+        int blockHeight = (int) Math.ceil(height / (double) m);//横着分可以分几块
+        int blockWidth = (int) Math.ceil(width / (double) n);//竖着分可以分几块
         int sumBlock = blockHeight * blockWidth;
         int blockPixel = m * n;//一块中的像素个数
         int[][] block2Array = new int[blockPixel][sumBlock];
         for (int j = 0; j < sumBlock; j++) {
             //TODO 把一列对应的一块赋值 i为正在处理的当前块序号,(row,col)为当前块对应的原始二维数组第一个像素
-            int row = (j * m) % height;
+            int row = (j % blockHeight) * m;
             int col = j / blockHeight * n;
             for (int i = 0; i < blockPixel; i++) {
                 int rowIndex = i % m;
-                int colIndex = i / n;
-                if (row + rowIndex >= height || col + colIndex >= width) {
+                int colIndex = i / m;
+                int x = row + rowIndex;
+                int y = col + colIndex;
+                if (x >= height || y >= width) {
                     block2Array[i][j] = 0;
                 } else {
-                    block2Array[i][j] = array[row + rowIndex][col + colIndex];
+                    block2Array[i][j] = array[x][y];
                 }
             }
         }
@@ -386,36 +399,41 @@ public class To {
             cpyKey[i] = key[i];
         }
         int blockNum = array[0].length;//列数 即是块数
-        double[] xor_key = Rand_numbers.Rand_numbers(key, blockNum, 256);
-        double[] sequence = Chaotic.chaotic_maping_sequence(key[0], key[1], blockNum);
+        double[] xor_key = Rand_numbers.Rand_numbers(cpyKey, blockNum, 256);
+        double[] sequence = Chaotic.chaotic_maping_sequence(cpyKey[0], cpyKey[1], blockNum);
         int[] bitmap = new int[m * n];//一块的16个像素矩阵
         int[][] I_compress = new int[4][blockNum];//返回结果
+        int sumPixel = m * n;
         //TODO 对每块进行处理 AMBTC
         for (int j = 0; j < blockNum; j++) {
             int sum = 0;
-            for (int i = 0; i < m * n; i++) {
+            for (int i = 0; i < sumPixel; i++) {
                 sum += array[i][j];
             }
-            int ave = sum / (m * n);//均值
+            int ave = sum / sumPixel;//均值
             int highSum = 0;
+            int lowSum = 0;
             int highNum = 0;
-            for (int i = 0; i < m * n; i++) {
+            int lowNum = 0;
+            for (int i = 0; i < sumPixel; i++) {
                 if (array[i][j] >= ave) {
                     highNum++;
                     highSum += array[i][j];
                     bitmap[i] = 1;
                 } else {
+                    lowNum++;
+                    lowSum += array[i][j];
                     bitmap[i] = 0;
                 }
             }
             int b = highSum / highNum;   //高均值
             int a;
-            if (highNum == m * n) {
+            if (highNum == sumPixel) {
                 a = b;
             } else {//这里不会出现除以0的情况
-                a = (sum - highSum) / (m * n - highNum);  //低均值
+                a = lowSum / lowNum;  //低均值
             }
-            bitmap = My_rand.my_rand(bitmap, sequence[j], key[1], j);
+            bitmap = My_rand.my_rand(bitmap, sequence[j], cpyKey[1], j);
             int[] dec = My_bin2dec.my_bin2dec(bitmap, 8);
             double[] keyTemp = new double[len];//复制key
             for (int i = 0; i < len; i++) {
@@ -444,7 +462,7 @@ public class To {
      * @param n          分块大小
      * @param height     期望生成的高
      * @param width      期望生成的宽
-     * @return 单图通道的一层
+     * @return 单图通道的一层，组装成正常矩阵
      */
     public static int[][] col2im(int[][] I_compress, int m, int n, int height, int width) {
         int blockNum = I_compress[0].length;
@@ -453,15 +471,16 @@ public class To {
         int blockPixel = m * n;
         for (int j = 0; j < blockNum; j++) {
             //TODO 把一列对应的一块赋值 i为正在处理的当前块序号,(row,col)为当前块对应的原始二维数组第一个像素
-            int row = (j * m) % height;
-            int col = j / blockHeight;
-            col *= n;
+            int row = (j % blockHeight) * m;
+            int col = j / blockHeight * n;
             for (int i = 0; i < blockPixel; i++) {//4
                 int rowIndex = i % m;
-                int colIndex = i / n;
+                int colIndex = i / m;
                 int x = row + rowIndex;
                 int y = col + colIndex;
-                bitmap2Array[x][y] = I_compress[i][j];
+                if (x < height && y < width) {
+                    bitmap2Array[x][y] = I_compress[i][j];
+                }
             }
         }
         return bitmap2Array;
@@ -510,4 +529,39 @@ public class To {
         return ans;
     }
 
+    /**
+     * 把bitmap jpeg存入图库
+     *
+     * @param context 上下文
+     * @param bmp     要处理的bitmap
+     */
+    public static void saveImageToGallery(Context context, Bitmap bmp) {
+        // 首先保存图片
+        File appDir = new File(Environment.getExternalStorageDirectory(), "Boohee");
+        if (!appDir.exists()) {
+            appDir.mkdir();
+        }
+        String fileName = System.currentTimeMillis() + ".jpg";
+        File file = new File(appDir, fileName);
+        try {
+            FileOutputStream fos = new FileOutputStream(file);
+            bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            fos.flush();
+            fos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // 其次把文件插入到系统图库
+        try {
+            MediaStore.Images.Media.insertImage(context.getContentResolver(),
+                    file.getAbsolutePath(), fileName, null);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        // 最后通知图库更新
+        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + path)));
+    }
 }
