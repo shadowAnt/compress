@@ -137,6 +137,8 @@ public class AuthenticActivity extends AppCompatActivity implements CardView.OnC
                 break;
             case R.id.quitButton:
                 //TODO 结束退出
+                GlobalVaries globalVaries = (GlobalVaries) getApplication();
+                globalVaries.toNull();
                 finish();
                 break;
             case R.id.nextButton:

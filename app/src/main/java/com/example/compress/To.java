@@ -340,44 +340,9 @@ public class To {
             }
         }
         int[][][] ans = new int[2][sumPixel][sumBlock];
-        ans[0] = Ic;
+        ans[0] = Ic;//16*分块数
         ans[1] = Ic2;
         return ans;
-    }
-
-    /**
-     * 把RGB单独的一层进行分块处理
-     *
-     * @param array 单独的一层
-     * @param m     分块的大小
-     * @param n     分块的大小
-     * @return 分块结果二维矩阵
-     */
-    public static int[][] im2col(int[][] array, int m, int n) {
-        int height = array.length;
-        int width = array[0].length;
-        int blockHeight = (int) Math.ceil(height / (double) m);//横着分可以分几块
-        int blockWidth = (int) Math.ceil(width / (double) n);//竖着分可以分几块
-        int sumBlock = blockHeight * blockWidth;
-        int blockPixel = m * n;//一块中的像素个数
-        int[][] block2Array = new int[blockPixel][sumBlock];
-        for (int j = 0; j < sumBlock; j++) {
-            //TODO 把一列对应的一块赋值 i为正在处理的当前块序号,(row,col)为当前块对应的原始二维数组第一个像素
-            int row = (j % blockHeight) * m;
-            int col = j / blockHeight * n;
-            for (int i = 0; i < blockPixel; i++) {
-                int rowIndex = i % m;
-                int colIndex = i / m;
-                int x = row + rowIndex;
-                int y = col + colIndex;
-                if (x >= height || y >= width) {
-                    block2Array[i][j] = 0;
-                } else {
-                    block2Array[i][j] = array[x][y];
-                }
-            }
-        }
-        return block2Array;
     }
 
     /**
@@ -454,6 +419,41 @@ public class To {
     }
 
     /**
+     * 把RGB单独的一层进行分块处理
+     *
+     * @param array 单独的一层
+     * @param m     分块的大小
+     * @param n     分块的大小
+     * @return 分块结果二维矩阵
+     */
+    public static int[][] im2col(int[][] array, int m, int n) {
+        int height = array.length;
+        int width = array[0].length;
+        int blockHeight = (int) Math.ceil(height / (double) m);//横着分可以分几块
+        int blockWidth = (int) Math.ceil(width / (double) n);//竖着分可以分几块
+        int sumBlock = blockHeight * blockWidth;
+        int blockPixel = m * n;//一块中的像素个数
+        int[][] block2Array = new int[blockPixel][sumBlock];
+        for (int j = 0; j < sumBlock; j++) {
+            //TODO 把一列对应的一块赋值 i为正在处理的当前块序号,(row,col)为当前块对应的原始二维数组第一个像素
+            int row = (j % blockHeight) * m;
+            int col = j / blockHeight * n;
+            for (int i = 0; i < blockPixel; i++) {
+                int rowIndex = i % m;
+                int colIndex = i / m;
+                int x = row + rowIndex;
+                int y = col + colIndex;
+                if (x >= height || y >= width) {
+                    block2Array[i][j] = 0;
+                } else {
+                    block2Array[i][j] = array[x][y];
+                }
+            }
+        }
+        return block2Array;
+    }
+
+    /**
      * 把分块压缩后的二维矩阵转化为单图通道的一层
      *
      * @param I_compress 分块压缩后的二维矩阵
@@ -465,9 +465,9 @@ public class To {
      */
     public static int[][] col2im(int[][] I_compress, int m, int n, int height, int width) {
         int blockNum = I_compress[0].length;
-        int blockHeight = height / m;//横着分可以分几块
+        int blockPixel = I_compress.length;
+        int blockHeight = (int) Math.ceil(height / (double) m);//横着分可以分几块
         int[][] bitmap2Array = new int[height][width];//返回结果
-        int blockPixel = m * n;
         for (int j = 0; j < blockNum; j++) {
             //TODO 把一列对应的一块赋值 i为正在处理的当前块序号,(row,col)为当前块对应的原始二维数组第一个像素
             int row = (j % blockHeight) * m;

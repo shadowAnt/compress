@@ -135,6 +135,8 @@ public class EncodeActivity extends AppCompatActivity implements CardView.OnClic
                 break;
             case R.id.quitButton_encode:
                 //TODO 退出
+                GlobalVaries globalVaries1 = (GlobalVaries) getApplication();
+                globalVaries1.toNull();
                 finish();
                 break;
             case R.id.nextButton_encode:
