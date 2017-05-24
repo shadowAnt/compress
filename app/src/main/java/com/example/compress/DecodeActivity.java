@@ -50,6 +50,7 @@ public class DecodeActivity extends AppCompatActivity implements CardView.OnClic
     Button overButton;
     Button chooseAuthentic;
     Button chooseOrigin;
+    Button psnr;
     TextView resultText;
     Bitmap resultBitmap;
     Bitmap originBitmap;
@@ -57,6 +58,7 @@ public class DecodeActivity extends AppCompatActivity implements CardView.OnClic
     ScrollView scrollView;
     String authenticationUrl = "ahu.bmp";
     String originUrl = "lena.bmp";
+    String resultString = "";
     int m = 4;
     int n = 4;
     int originWidth;
@@ -68,14 +70,13 @@ public class DecodeActivity extends AppCompatActivity implements CardView.OnClic
     Bitmap ic2Bitmap;
     public static final int CHOOSE_PHOTO = 1;
     int flag;
+    double[][][] resultArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            //透明状态栏
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            //透明导航栏
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         }
         setContentView(R.layout.activity_decode);
@@ -86,7 +87,8 @@ public class DecodeActivity extends AppCompatActivity implements CardView.OnClic
         GlobalVaries globalVaries = (GlobalVaries) getApplication();
         originHight = globalVaries.getOriginHeight();
         originWidth = globalVaries.getOriginWidth();
-        resultBitmap = globalVaries.getTamperResultBitmap();
+        resultArray = globalVaries.getTamperResultArray();
+        resultBitmap = To.ArraytoBitmap(resultArray);
 
         authenticImage = (GifImageView) findViewById(R.id.authentic_decode);
         scrollView = (ScrollView) findViewById(R.id.scrollView_decode);
@@ -98,10 +100,13 @@ public class DecodeActivity extends AppCompatActivity implements CardView.OnClic
         start = (Button) findViewById(R.id.startButton_decode);
         overButton = (Button) findViewById(R.id.over);
         chooseAuthentic = (Button) findViewById(R.id.choose_authentic);
+        psnr = (Button) findViewById(R.id.psnrButton);
         chooseOrigin = (Button) findViewById(R.id.choose_origin);
         resultText = (TextView) findViewById(R.id.authenticText_decode);
+
         chooseOrigin.setOnClickListener(this);
         start.setOnClickListener(this);
+        psnr.setOnClickListener(this);
         chooseAuthentic.setOnClickListener(this);
         overButton.setOnClickListener(this);
         //加载初始图像
@@ -121,29 +126,31 @@ public class DecodeActivity extends AppCompatActivity implements CardView.OnClic
                     public void run() {
                         double[] key = {0.78, 3.59, Math.pow(7, 5), 0, Math.pow(2, 31) - 1, 102};
                         //TODO 处理认证图像
-                        int[][][] threeArray = To.BitmapToArray(authenticationBitmap);//原始图像的三位数组
-                        int[][][] binaryArray = To.RGBtoBinary(threeArray);//二值化后的三位数组
-                        int[][][] encodeBinaryArray = To.EncodeBinaryArray(binaryArray, key);//加密后的认证图像三维数组
-                        int[][][] resultArray = To.BitmapToArray(resultBitmap);
+                        double[][][] threeArray = To.BitmapToArray(authenticationBitmap);//原始图像的三位数组
+                        double[][][] binaryArray = To.RGBtoBinary(threeArray);//二值化后的三位数组
+                        double[][][] encodeBinaryArray = To.EncodeBinaryArray(binaryArray, key);//加密后的认证图像三维数组
+
                         //TODO 解密
-                        int[][][][] ans = To.De(resultArray, originHight, originWidth, m, n, encodeBinaryArray, key);
-                        int[][][] Ic = ans[0];
-                        int[][][] Ic2 = ans[1];
+                        double[][][][] ans = To.De(resultArray, originHight, originWidth, m, n, encodeBinaryArray, key);
+                        double[][][] Ic = ans[0];
+                        double[][][] Ic2 = ans[1];
                         icBitmap = To.ArraytoBitmap(Ic);
                         ic2Bitmap = To.ArraytoBitmap(Ic2);
                         handler.post(new Runnable() {    // 在新线程中使用Handler向主线程发送一段代码, 主线程自动执行run()方法
                             public void run() {
                                 decodeResultImage.setImageBitmap(icBitmap);
                                 whereImage.setImageBitmap(ic2Bitmap);
+                                GlobalVaries globalVaries = (GlobalVaries) getApplication();
+                                String url = globalVaries.getURL();
+                                if (url != null) {
+                                    originBitmap = BitmapFactory.decodeFile(url);
+                                    originImage.setImageBitmap(originBitmap);
+                                }
                                 dialog.dismiss();
                             }
                         });
                     }
                 }.start();
-//                restoreBitmap = Joint_de.joint_de(resultBitmap, originHight, originWidth, m, n, resultBitmapArray[0], key2);
-//                decodeResultImage.setImageBitmap(restoreBitmap[0]);
-//                java.text.DecimalFormat df = new java.text.DecimalFormat("#.0000");
-//                resultString += ("PSNR: " + df.format(PSNR.psnr(originBitmap, restoreBitmap[0])) + "\n");
                 break;
             case R.id.over:
                 GlobalVaries globalVaries = (GlobalVaries) getApplication();
@@ -166,6 +173,21 @@ public class DecodeActivity extends AppCompatActivity implements CardView.OnClic
                     openAlbum();
                 }
                 break;
+            case R.id.psnrButton:
+                dialog = new XProgressDialog(this, "正在计算PSNR...", XProgressDialog.THEME_CIRCLE_PROGRESS);
+                dialog.show();
+                new Thread() {
+                    public void run() {
+                        java.text.DecimalFormat df = new java.text.DecimalFormat("#.00");
+                        resultString += ("PSNR: " + df.format(To.PSNR(originBitmap, icBitmap)) + "\n");
+                        handler.post(new Runnable() {    // 在新线程中使用Handler向主线程发送一段代码, 主线程自动执行run()方法
+                            public void run() {
+                                resultText.setText(resultString);
+                                dialog.dismiss();
+                            }
+                        });
+                    }
+                }.start();
             default:
                 break;
         }

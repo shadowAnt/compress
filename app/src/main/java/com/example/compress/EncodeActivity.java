@@ -52,19 +52,18 @@ public class EncodeActivity extends AppCompatActivity implements CardView.OnClic
     ImageView originImage;
     GifImageView resultImage;
     TextView resultText;
-    Bitmap enAuthenticationBitmap = null;
-    int[][][] encodeBinaryArray = null;
+    double[][][] encodeBinaryArray = null;
     Bitmap originBitmap;
     Bitmap resultBitmap;
     InputStream is;
     int m = 4;
     int n = 4;
-    String originUrl = "peppers.bmp";
+    String originUrl = "lena.bmp";
     String resultString = "";
     public static final int CHOOSE_PHOTO = 1;
     XProgressDialog dialog;
     private Handler handler = new Handler();
-
+    double[][][] resultArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,9 +80,8 @@ public class EncodeActivity extends AppCompatActivity implements CardView.OnClic
         tintManager.setNavigationBarTintEnabled(true);
 
         GlobalVaries globalVaries = (GlobalVaries) getApplication();
-        enAuthenticationBitmap = globalVaries.getEncodeBinaryBitmap();
+        encodeBinaryArray = globalVaries.getEncodeBinaryArray();
 
-        encodeBinaryArray = To.BitmapToArray(enAuthenticationBitmap);
         ScrollView scrollView = (ScrollView) findViewById(R.id.scrollEncode);
         scrollView.setVerticalScrollBarEnabled(false);
         choose = (Button) findViewById(R.id.changeButton_encode);
@@ -118,14 +116,14 @@ public class EncodeActivity extends AppCompatActivity implements CardView.OnClic
                 new Thread() {
                     public void run() {
                         double[] key = {0.78, 3.59, Math.pow(7, 5), 0, Math.pow(2, 31) - 1, 102};
-                        int[][][] originArray = To.BitmapToArray(originBitmap);
-                        int[][][] resultArray = To.En(originArray, m, n, encodeBinaryArray, key);//(int) Math.ceil(height / m) * 2;
+                        double[][][] originArray = To.BitmapToArray(originBitmap);
+                        resultArray = To.En(originArray, m, n, encodeBinaryArray, key);//(int) Math.ceil(height / m) * 2;
                         resultBitmap = To.ArraytoBitmap(resultArray);
                         handler.post(new Runnable() {    // 在新线程中使用Handler向主线程发送一段代码, 主线程自动执行run()方法
                             public void run() {
                                 resultImage.setImageBitmap(resultBitmap);
                                 GlobalVaries globalVaries = (GlobalVaries) getApplication();
-                                globalVaries.setResultBitmap(resultBitmap);
+                                globalVaries.setResultArray(resultArray);
                                 globalVaries.setEn(true);
                                 dialog.dismiss();
                             }
@@ -263,6 +261,8 @@ public class EncodeActivity extends AppCompatActivity implements CardView.OnClic
     private void displayImage(String imagePath) {
         if (imagePath != null) {
             originBitmap = BitmapFactory.decodeFile(imagePath);
+            GlobalVaries globalVaries = (GlobalVaries) getApplication();
+            globalVaries.setURL(imagePath);
             resultString = "";
             resultString += "认证图像位置:    " + imagePath + "\n";
             originImage.setImageBitmap(originBitmap);

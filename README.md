@@ -16,3 +16,26 @@
 13. AMBTC压缩
 14. 混沌加密
 15. 二值化
+16. 矩阵变为Bitmap要为int类型，处理过程如果使用int类型会使图像质量大打折扣，而且不能简单的强转为int类型，要使用四舍五入Math.round()方法。所以在处理过程中要一直使用double类型来保留精度。
+
+
+
+点击按钮后，开启进度条，在线程中处理耗时工作，处理完毕后回到主进程进行UI操作
+```java
+dialog = new XProgressDialog(this, "正在计算PSNR...", XProgressDialog.THEME_CIRCLE_PROGRESS);
+dialog.show();
+new Thread() {
+    public void run() {
+
+        handler.post(new Runnable() {    // 在新线程中使用Handler向主线程发送一段代码, 主线程自动执行run()方法
+            public void run() {
+
+                dialog.dismiss();
+            }
+        });
+    }
+}.start();
+```
+
+
+            

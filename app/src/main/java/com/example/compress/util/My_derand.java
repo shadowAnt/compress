@@ -17,11 +17,11 @@ public class My_derand {
      * @param bitmap
      * @return
      */
-    public static int[] my_derand(int[] bitmap, double sequence, double key) {
-        int[] bitmap2 = new int[bitmap.length];
-        int[] rand_order = Chaotic.chaotic_maping_order(sequence, key, 16);
+    public static double[] my_derand(double[] bitmap, double sequence, double key) {
+        double[] bitmap2 = new double[bitmap.length];
+        double[] rand_order = Chaotic.chaotic_maping_order(sequence, key, 16);
         for (int i = 0; i < 16; i++) {
-            bitmap2[rand_order[i]] = bitmap[i];
+            bitmap2[(int)rand_order[i]] = bitmap[i];
         }
         return bitmap2;
     }

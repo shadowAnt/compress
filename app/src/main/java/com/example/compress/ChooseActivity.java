@@ -1,10 +1,8 @@
 package com.example.compress;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -13,8 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-
-import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import net.lemonsoft.lemonhello.LemonHello;
 import net.lemonsoft.lemonhello.LemonHelloAction;
@@ -38,19 +34,11 @@ public class ChooseActivity extends AppCompatActivity implements CardView.OnClic
         }
         setContentView(R.layout.activity_choose);
 
-//        SystemBarTintManager tintManager = new SystemBarTintManager(this);
-//        // enable status bar tint
-//        tintManager.setStatusBarTintEnabled(true);
-//        tintManager.setTintColor(Color.parseColor("#2980b9"));
-//        // enable navigation bar tint
-//        tintManager.setNavigationBarTintEnabled(true);
-
         //TODO 加载ToolBar 设置标题及字体颜色
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("压缩加密认证联合编码系统");
         toolbar.setTitleTextColor(Color.parseColor("#ecf0f1"));
         setSupportActionBar(toolbar);
-
 
         CardView enButton = (CardView) findViewById(R.id.en);
         CardView deButton = (CardView) findViewById(R.id.de);

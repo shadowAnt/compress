@@ -8,18 +8,53 @@ import android.graphics.Bitmap;
  */
 
 public final class GlobalVaries extends Application {
-    private Bitmap encodeBinaryBitmap;
-    private Bitmap resultBitmap;
-    private Bitmap tamperResultBitmap;
     private Boolean isEn = false;
     private Boolean isTamper = false;
+    private String URL;
+    private double[][][] encodeBinaryArray;
+
+    public String getURL() {
+        return URL;
+    }
+
+    public void setURL(String URL) {
+        this.URL = URL;
+    }
+
+    private double[][][] resultArray;
+    private double[][][] tamperResultArray;
+
+    public double[][][] getEncodeBinaryArray() {
+        return encodeBinaryArray;
+    }
+
+    public void setEncodeBinaryArray(double[][][] encodeBinaryArray) {
+        this.encodeBinaryArray = encodeBinaryArray;
+    }
+
+    public double[][][] getResultArray() {
+        return resultArray;
+    }
+
+    public void setResultArray(double[][][] resultArray) {
+        this.resultArray = resultArray;
+    }
+
+    public double[][][] getTamperResultArray() {
+        return tamperResultArray;
+    }
+
+    public void setTamperResultArray(double[][][] tamperResultArray) {
+        this.tamperResultArray = tamperResultArray;
+    }
 
     public void toNull(){//清零
-        encodeBinaryBitmap = null;
-        resultBitmap = null;
-        tamperResultBitmap = null;
+        encodeBinaryArray = null;
+        resultArray = null;
+        tamperResultArray = null;
         isEn = false;
         isTamper = false;
+        URL = null;
     }
 
     public Boolean getEn() {
@@ -36,14 +71,6 @@ public final class GlobalVaries extends Application {
 
     public void setTamper(Boolean tamper) {
         isTamper = tamper;
-    }
-
-    public Bitmap getTamperResultBitmap() {
-        return tamperResultBitmap;
-    }
-
-    public void setTamperResultBitmap(Bitmap tamperResultBitmap) {
-        this.tamperResultBitmap = tamperResultBitmap;
     }
 
     private int originHeight;
@@ -63,21 +90,5 @@ public final class GlobalVaries extends Application {
 
     public void setOriginWidth(int originWidth) {
         this.originWidth = originWidth;
-    }
-
-    public Bitmap getResultBitmap() {
-        return resultBitmap;
-    }
-
-    public void setResultBitmap(Bitmap resultBitmap) {
-        this.resultBitmap = resultBitmap;
-    }
-
-    public Bitmap getEncodeBinaryBitmap() {
-        return encodeBinaryBitmap;
-    }
-
-    public void setEncodeBinaryBitmap(Bitmap encodeBinaryBitmap) {
-        this.encodeBinaryBitmap = encodeBinaryBitmap;
     }
 }

@@ -29,13 +29,13 @@ public class Chaotic {
      * @param n
      * @return
      */
-    public static int[] chaotic_maping_order(double a, double b, int n) {
+    public static double[] chaotic_maping_order(double a, double b, int n) {
         double[] sequence = new double[n];
         sequence[0] = a;
         for (int i = 1; i < n; i++) {
             sequence[i] = b * sequence[i - 1] * (1 - sequence[i - 1]);
         }
-        int[] rand_order = new int[n];
+        double[] rand_order = new double[n];
         for (int i = 0; i < n; i++) {
             int pos = Matlab.find(sequence, Matlab.min(sequence));
             rand_order[i] = pos;

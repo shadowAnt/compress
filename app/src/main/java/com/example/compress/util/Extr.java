@@ -5,7 +5,7 @@ package com.example.compress.util;
  */
 
 public class Extr {
-    public static int extr(int a, int b, int[] dec) {
+    public static double extr(double a, double b, double[] dec) {
         int code;
         if (a == b) {
             if (dec[0] == 255 && dec[1] == 255) {

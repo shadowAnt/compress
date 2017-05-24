@@ -59,7 +59,7 @@ public class AuthenticActivity extends AppCompatActivity implements CardView.OnC
     double[] key = {0.78, 3.59, Math.pow(7, 5), 0, Math.pow(2, 31) - 1, 102};
     public static final int CHOOSE_PHOTO = 1;
     Bitmap authenticationBitmap;
-    int[][][] encodeBinaryArray = null;
+    double[][][] encodeBinaryArray = null;
     Bitmap encodeBinaryBitmap;
     private Handler handler = new Handler();
     XProgressDialog dialog;
@@ -105,8 +105,8 @@ public class AuthenticActivity extends AppCompatActivity implements CardView.OnC
                     public void run() {
                         long startMili = System.currentTimeMillis();// 当前时间对应的毫秒数
 
-                        int[][][] threeArray = To.BitmapToArray(bitmap);//原始图像的三位数组
-                        int[][][] binaryArray = To.RGBtoBinary(threeArray);//二值化后的三位数组
+                        double[][][] threeArray = To.BitmapToArray(bitmap);//原始图像的三位数组
+                        double[][][] binaryArray = To.RGBtoBinary(threeArray);//二值化后的三位数组
                         binaryBitmap = To.ArraytoBitmap(binaryArray);//二值化后的Bitmap
 
                         encodeBinaryArray = To.EncodeBinaryArray(binaryArray, key);//加密后的认证图像三维数组
@@ -120,7 +120,7 @@ public class AuthenticActivity extends AppCompatActivity implements CardView.OnC
                                 twoDataAuthenticImage.setImageBitmap(binaryBitmap);
                                 authenticResultImage.setImageBitmap(encodeBinaryBitmap);
                                 GlobalVaries globalVaries = (GlobalVaries) getApplication();
-                                globalVaries.setEncodeBinaryBitmap(encodeBinaryBitmap);
+                                globalVaries.setEncodeBinaryArray(encodeBinaryArray);
                                 dialog.dismiss();
                             }
                         });

@@ -23,16 +23,16 @@ public class My_dec2bin {
      * @param n
      * @return
      */
-    public static int[] my_dec2bin(int[] dec, int n) {
+    public static double[] my_dec2bin(double[] dec, int n) {
         int len = dec.length;
-        int[] bitmap = new int[len * n];
+        double[] bitmap = new double[len * n];
         int index = 0;
         for (int i = 0; i < len; i++) {
-            int temp = dec[i];
+            int temp = (int) dec[i];
             for (int j = 0; j < n; j++) {
-                bitmap[index] = temp % 2;
+                bitmap[index] =  temp % 2;
                 index++;
-                temp /= 2;
+                temp =  temp / 2;
             }
         }
         return bitmap;

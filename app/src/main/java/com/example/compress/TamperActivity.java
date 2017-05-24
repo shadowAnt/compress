@@ -27,18 +27,15 @@ public class TamperActivity extends AppCompatActivity implements CardView.OnClic
     Button next;
     TextView resultText;
     Bitmap resultBitmap;
-    int originWidth;
-    int originHight;
     XProgressDialog dialog;
     private Handler handler = new Handler();
+    double[][][] resultArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            //透明状态栏
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            //透明导航栏
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         }
         setContentView(R.layout.activity_tamper);
@@ -47,7 +44,7 @@ public class TamperActivity extends AppCompatActivity implements CardView.OnClic
         tintManager.setNavigationBarTintEnabled(true);
 
         GlobalVaries globalVaries = (GlobalVaries) getApplication();
-        resultBitmap = globalVaries.getResultBitmap();
+        resultArray = globalVaries.getResultArray();
 
         ScrollView scrollView = (ScrollView) findViewById(R.id.scrollTamper);
         scrollView.setVerticalScrollBarEnabled(false);
@@ -70,7 +67,8 @@ public class TamperActivity extends AppCompatActivity implements CardView.OnClic
             case R.id.skip:
                 GlobalVaries globalVaries = (GlobalVaries) getApplication();
                 globalVaries.setTamper(true);
-                globalVaries.setTamperResultBitmap(resultBitmap);
+                globalVaries.setTamperResultArray(resultArray);
+                resultBitmap = To.ArraytoBitmap(resultArray);
                 attackResultImage.setImageBitmap(resultBitmap);
                 break;
             case R.id.startButton_tamper:
@@ -79,7 +77,6 @@ public class TamperActivity extends AppCompatActivity implements CardView.OnClic
                 new Thread() {
                     public void run() {
                         //TODO 开始篡改
-                        int[][][] resultArray = To.BitmapToArray(resultBitmap);
                         resultArray = To.tamper(resultArray, 121, 140, 121, 140, 255);
                         resultArray = To.tamper(resultArray, 1, 20, 1, 20, 0);
                         resultArray = To.tamper(resultArray, 237, 256, 1, 20, 0);
@@ -91,7 +88,7 @@ public class TamperActivity extends AppCompatActivity implements CardView.OnClic
                                 attackResultImage.setImageBitmap(resultBitmap);
                                 GlobalVaries globalVaries = (GlobalVaries) getApplication();
                                 globalVaries.setTamper(true);
-                                globalVaries.setTamperResultBitmap(resultBitmap);
+                                globalVaries.setTamperResultArray(resultArray);
                                 skipButton.setEnabled(false);//跳过按钮失效
                                 dialog.dismiss();
                             }

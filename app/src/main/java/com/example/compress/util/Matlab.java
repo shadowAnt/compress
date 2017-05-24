@@ -26,7 +26,7 @@ public class Matlab {
         return pos;
     }
 
-    public static double mean(int[][] input) {
+    public static double mean(double[][] input) {
         int height = input.length;
         int width = input[0].length;
         double sum = 0;
@@ -39,7 +39,7 @@ public class Matlab {
         return sum;
     }
 
-    public static int[][] multip2(int[][] x) {
+    public static double[][] multip2(double[][] x) {
         int m = x.length;
         int n = x[0].length;
         for (int i = 0; i < m; i++) {
