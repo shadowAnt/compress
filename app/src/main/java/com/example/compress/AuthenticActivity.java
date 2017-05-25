@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.apkfuns.xprogressdialog.XProgressDialog;
+import com.bigkoo.pickerview.OptionsPickerView;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import net.lemonsoft.lemonhello.LemonHello;
@@ -38,6 +39,8 @@ import net.lemonsoft.lemonhello.interfaces.LemonHelloActionDelegate;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 
 import pl.droidsonroids.gif.GifImageView;
 
@@ -48,6 +51,7 @@ public class AuthenticActivity extends AppCompatActivity implements CardView.OnC
     Button start;
     Button quit;
     Button next;
+    Button inputEnkey;
     ScrollView scrollView;
     ImageView authentic;
     GifImageView twoDataAuthenticImage;
@@ -64,6 +68,8 @@ public class AuthenticActivity extends AppCompatActivity implements CardView.OnC
     private Handler handler = new Handler();
     XProgressDialog dialog;
     Bitmap binaryBitmap;
+    List<String> keyList;
+    TextView enkey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +83,7 @@ public class AuthenticActivity extends AppCompatActivity implements CardView.OnC
         tintManager.setStatusBarTintEnabled(true);
         tintManager.setNavigationBarTintEnabled(true);
 
+        enkey = (TextView) findViewById(R.id.enkeyText);
         choose = (Button) findViewById(R.id.changeButton);
         choose.setOnClickListener(this);
         start = (Button) findViewById(R.id.startButton);
@@ -88,6 +95,8 @@ public class AuthenticActivity extends AppCompatActivity implements CardView.OnC
         resultText = (TextView) findViewById(R.id.authenticText);
         quit = (Button) findViewById(R.id.quitButton);
         next = (Button) findViewById(R.id.nextButton);
+        inputEnkey = (Button) findViewById(R.id.input_enkey);
+        inputEnkey.setOnClickListener(this);
         start.setOnClickListener(this);
         quit.setOnClickListener(this);
         next.setOnClickListener(this);
@@ -98,6 +107,41 @@ public class AuthenticActivity extends AppCompatActivity implements CardView.OnC
 
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.input_enkey:
+                String[] keyArray = new String[150];
+                for (int i = 0; i < keyArray.length; i++) {
+                    keyArray[i] = i + "";
+                }
+                keyList = Arrays.asList(keyArray);
+                OptionsPickerView pvOptions = new OptionsPickerView.Builder(this, new OptionsPickerView.OnOptionsSelectListener() {
+                    @Override
+                    public void onOptionsSelect(int options1, int options2, int options3, View v) {
+                        //返回的分别是三个级别的选中位置
+                        String tx = keyList.get(options1) + "  "
+                                + keyList.get(options2) + "  "
+                                + keyList.get(options3);
+                        key[1] = Double.parseDouble(keyList.get(options1));
+                        key[3] = Double.parseDouble(keyList.get(options2));
+                        key[5] = Double.parseDouble(keyList.get(options3));
+                        enkey.setText(tx);
+                    }
+                })
+                        .setSubmitText("确定")//确定按钮文字
+                        .setCancelText("取消")//取消按钮文字
+                        .setTitleText("加密密钥选择")//标题
+                        .setSubCalSize(18)//确定和取消文字大小
+                        .setTitleSize(20)//标题文字大小
+                        .setContentTextSize(18)//滚轮文字大小
+                        .setLabels("", "", "")//设置选择的三级单位
+                        .isCenterLabel(false) //是否只显示中间选中项的label文字，false则每项item全部都带有label。
+                        .setCyclic(true, true, true)//循环与否
+                        .setSelectOptions(1, 1, 1)  //设置默认选中项
+                        .setOutSideCancelable(false)//点击外部dismiss default true
+                        .isDialog(true)//是否显示为对话框样式
+                        .build();
+                pvOptions.setNPicker(keyList, keyList, keyList);//添加数据源
+                pvOptions.show();
+                break;
             case R.id.startButton:
                 dialog = new XProgressDialog(this, "正在处理图像...", XProgressDialog.THEME_CIRCLE_PROGRESS);
                 dialog.show();
@@ -154,6 +198,8 @@ public class AuthenticActivity extends AppCompatActivity implements CardView.OnC
                             .show(this);
                     break;
                 }
+                GlobalVaries globalVaries1 = (GlobalVaries) getApplication();
+                globalVaries1.setKey(key);
                 Intent intent1 = new Intent(this, EncodeActivity.class);
                 startActivity(intent1);
                 finish();

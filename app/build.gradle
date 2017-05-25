@@ -44,4 +44,5 @@ dependencies {
     compile 'com.github.1em0nsOft:LemonBubble4Android:1.0.13'
     compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
     compile 'com.apkfuns.xprogressdialog:xprogressdialog:1.2.0'
+    compile 'com.contrarywind:Android-PickerView:3.2.4'
 }

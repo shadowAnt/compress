@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.apkfuns.xprogressdialog.XProgressDialog;
+import com.bigkoo.pickerview.OptionsPickerView;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import net.lemonsoft.lemonhello.LemonHello;
@@ -36,6 +37,8 @@ import net.lemonsoft.lemonhello.interfaces.LemonHelloActionDelegate;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 
 import pl.droidsonroids.gif.GifImageView;
 
@@ -50,8 +53,10 @@ public class DecodeActivity extends AppCompatActivity implements CardView.OnClic
     Button overButton;
     Button chooseAuthentic;
     Button chooseOrigin;
+    Button inputDekey;
     Button psnr;
     TextView resultText;
+    TextView dekeyText;
     Bitmap resultBitmap;
     Bitmap originBitmap;
     InputStream is;
@@ -68,9 +73,11 @@ public class DecodeActivity extends AppCompatActivity implements CardView.OnClic
     XProgressDialog dialog;
     Bitmap icBitmap;
     Bitmap ic2Bitmap;
+    List<String> keyList;
     public static final int CHOOSE_PHOTO = 1;
     int flag;
     double[][][] resultArray;
+    double[] key = {0.78, 3.59, Math.pow(7, 5), 0, Math.pow(2, 31) - 1, 102};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,14 +107,17 @@ public class DecodeActivity extends AppCompatActivity implements CardView.OnClic
         start = (Button) findViewById(R.id.startButton_decode);
         overButton = (Button) findViewById(R.id.over);
         chooseAuthentic = (Button) findViewById(R.id.choose_authentic);
+        inputDekey = (Button) findViewById(R.id.input_dekey);
         psnr = (Button) findViewById(R.id.psnrButton);
         chooseOrigin = (Button) findViewById(R.id.choose_origin);
         resultText = (TextView) findViewById(R.id.authenticText_decode);
+        dekeyText = (TextView) findViewById(R.id.dekeyText);
 
         chooseOrigin.setOnClickListener(this);
         start.setOnClickListener(this);
         psnr.setOnClickListener(this);
         chooseAuthentic.setOnClickListener(this);
+        inputDekey.setOnClickListener(this);
         overButton.setOnClickListener(this);
         //加载初始图像
         decodeImage.setImageBitmap(resultBitmap);
@@ -119,12 +129,46 @@ public class DecodeActivity extends AppCompatActivity implements CardView.OnClic
 
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.input_dekey:
+                String[] keyArray = new String[150];
+                for(int i=0; i<keyArray.length; i++){
+                    keyArray[i] = i+"";
+                }
+                keyList = Arrays.asList(keyArray);
+                OptionsPickerView pvOptions = new  OptionsPickerView.Builder(this, new OptionsPickerView.OnOptionsSelectListener() {
+                    @Override
+                    public void onOptionsSelect(int options1, int options2, int options3 ,View v) {
+                        //返回的分别是三个级别的选中位置
+                        String tx = keyList.get(options1) + "  "
+                                + keyList.get(options2) + "  "
+                                + keyList.get(options3);
+                        key[1] =  Double.parseDouble(keyList.get(options1));
+                        key[3] =  Double.parseDouble(keyList.get(options2));
+                        key[5] =  Double.parseDouble(keyList.get(options3));
+                        dekeyText.setText(tx);
+                    }
+                })
+                        .setSubmitText("确定")//确定按钮文字
+                        .setCancelText("取消")//取消按钮文字
+                        .setTitleText("加密密钥选择")//标题
+                        .setSubCalSize(18)//确定和取消文字大小
+                        .setTitleSize(20)//标题文字大小
+                        .setContentTextSize(18)//滚轮文字大小
+                        .setLabels("", "", "")//设置选择的三级单位
+                        .isCenterLabel(false) //是否只显示中间选中项的label文字，false则每项item全部都带有label。
+                        .setCyclic(true, true, true)//循环与否
+                        .setSelectOptions(1, 1, 1)  //设置默认选中项
+                        .setOutSideCancelable(false)//点击外部dismiss default true
+                        .isDialog(true)//是否显示为对话框样式
+                        .build();
+                pvOptions.setNPicker(keyList, keyList, keyList);//添加数据源
+                pvOptions.show();
+                break;
             case R.id.startButton_decode:
                 dialog = new XProgressDialog(this, "正在处理图像...", XProgressDialog.THEME_CIRCLE_PROGRESS);
                 dialog.show();
                 new Thread() {
                     public void run() {
-                        double[] key = {0.78, 3.59, Math.pow(7, 5), 0, Math.pow(2, 31) - 1, 102};
                         //TODO 处理认证图像
                         double[][][] threeArray = To.BitmapToArray(authenticationBitmap);//原始图像的三位数组
                         double[][][] binaryArray = To.RGBtoBinary(threeArray);//二值化后的三位数组

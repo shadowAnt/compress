@@ -46,11 +46,16 @@
                 android:layout_height="wrap_content"
                 android:text="用来解密的认证图像:" />
 
-            <Button
+            <info.hoang8f.widget.FButton
                 android:id="@+id/choose_authentic"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="选择认证图像" />
+                android:layout_margin="10dp"
+                android:text="选择认证图像"
+                android:textColor="@android:color/white"
+                android:textSize="14dp"
+                fbutton:buttonColor="@color/fbutton_color_peter_river"
+                fbutton:shadowEnabled="true" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -67,6 +72,23 @@
                     android:src="@drawable/loading" />
 
             </LinearLayout>
+
+            <info.hoang8f.widget.FButton
+                android:id="@+id/input_dekey"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="解密密钥"
+                android:textColor="@android:color/white"
+                android:textSize="14dp"
+                fbutton:buttonColor="@color/fbutton_color_peter_river"
+                fbutton:shadowEnabled="true" />
+
+            <TextView
+                android:id="@+id/dekeyText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="解密密钥" />
 
             <info.hoang8f.widget.FButton
                 android:id="@+id/startButton_decode"
@@ -171,7 +193,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="8dp">
+                android:layout_margin="8dp"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/authenticText_decode"

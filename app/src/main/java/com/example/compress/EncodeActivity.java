@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.apkfuns.xprogressdialog.XProgressDialog;
+import com.bigkoo.pickerview.OptionsPickerView;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import net.lemonsoft.lemonhello.LemonHello;
@@ -40,6 +41,7 @@ import net.lemonsoft.lemonhello.interfaces.LemonHelloActionDelegate;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+
 
 import pl.droidsonroids.gif.GifImageView;
 
@@ -64,6 +66,7 @@ public class EncodeActivity extends AppCompatActivity implements CardView.OnClic
     XProgressDialog dialog;
     private Handler handler = new Handler();
     double[][][] resultArray;
+    double[] key;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +84,7 @@ public class EncodeActivity extends AppCompatActivity implements CardView.OnClic
 
         GlobalVaries globalVaries = (GlobalVaries) getApplication();
         encodeBinaryArray = globalVaries.getEncodeBinaryArray();
-
+        key = globalVaries.getKey();
         ScrollView scrollView = (ScrollView) findViewById(R.id.scrollEncode);
         scrollView.setVerticalScrollBarEnabled(false);
         choose = (Button) findViewById(R.id.changeButton_encode);
@@ -115,7 +118,6 @@ public class EncodeActivity extends AppCompatActivity implements CardView.OnClic
                 dialog.show();
                 new Thread() {
                     public void run() {
-                        double[] key = {0.78, 3.59, Math.pow(7, 5), 0, Math.pow(2, 31) - 1, 102};
                         double[][][] originArray = To.BitmapToArray(originBitmap);
                         resultArray = To.En(originArray, m, n, encodeBinaryArray, key);//(int) Math.ceil(height / m) * 2;
                         resultBitmap = To.ArraytoBitmap(resultArray);

@@ -39,7 +39,7 @@ public class Chaotic {
         for (int i = 0; i < n; i++) {
             int pos = Matlab.find(sequence, Matlab.min(sequence));
             rand_order[i] = pos;
-            sequence[pos] = 65535;
+            sequence[pos] = 2147483647;
         }
         return rand_order;
     }

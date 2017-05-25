@@ -12,6 +12,15 @@ public final class GlobalVaries extends Application {
     private Boolean isTamper = false;
     private String URL;
     private double[][][] encodeBinaryArray;
+    private double[] key;
+
+    public double[] getKey() {
+        return key;
+    }
+
+    public void setKey(double[] key) {
+        this.key = key;
+    }
 
     public String getURL() {
         return URL;
