@@ -55,6 +55,7 @@ public class DecodeActivity extends AppCompatActivity implements CardView.OnClic
     Button chooseOrigin;
     Button inputDekey;
     Button psnr;
+    Button chooseDe;
     TextView resultText;
     TextView dekeyText;
     Bitmap resultBitmap;
@@ -95,7 +96,6 @@ public class DecodeActivity extends AppCompatActivity implements CardView.OnClic
         originHight = globalVaries.getOriginHeight();
         originWidth = globalVaries.getOriginWidth();
         resultArray = globalVaries.getTamperResultArray();
-        resultBitmap = To.ArraytoBitmap(resultArray);
 
         authenticImage = (GifImageView) findViewById(R.id.authentic_decode);
         scrollView = (ScrollView) findViewById(R.id.scrollView_decode);
@@ -112,7 +112,8 @@ public class DecodeActivity extends AppCompatActivity implements CardView.OnClic
         chooseOrigin = (Button) findViewById(R.id.choose_origin);
         resultText = (TextView) findViewById(R.id.authenticText_decode);
         dekeyText = (TextView) findViewById(R.id.dekeyText);
-
+        chooseDe = (Button) findViewById(R.id.choose_de);
+        chooseDe.setOnClickListener(this);
         chooseOrigin.setOnClickListener(this);
         start.setOnClickListener(this);
         psnr.setOnClickListener(this);
@@ -120,7 +121,6 @@ public class DecodeActivity extends AppCompatActivity implements CardView.OnClic
         inputDekey.setOnClickListener(this);
         overButton.setOnClickListener(this);
         //加载初始图像
-        decodeImage.setImageBitmap(resultBitmap);
         originBitmap = loadAnyImage(originUrl);
         originImage.setImageBitmap(originBitmap);
         authenticationBitmap = loadAnyImage(authenticationUrl);
@@ -131,26 +131,26 @@ public class DecodeActivity extends AppCompatActivity implements CardView.OnClic
         switch (v.getId()) {
             case R.id.input_dekey:
                 String[] keyArray = new String[150];
-                for(int i=0; i<keyArray.length; i++){
-                    keyArray[i] = i+"";
+                for (int i = 0; i < keyArray.length; i++) {
+                    keyArray[i] = i + "";
                 }
                 keyList = Arrays.asList(keyArray);
-                OptionsPickerView pvOptions = new  OptionsPickerView.Builder(this, new OptionsPickerView.OnOptionsSelectListener() {
+                OptionsPickerView pvOptions = new OptionsPickerView.Builder(this, new OptionsPickerView.OnOptionsSelectListener() {
                     @Override
-                    public void onOptionsSelect(int options1, int options2, int options3 ,View v) {
+                    public void onOptionsSelect(int options1, int options2, int options3, View v) {
                         //返回的分别是三个级别的选中位置
                         String tx = keyList.get(options1) + "  "
                                 + keyList.get(options2) + "  "
                                 + keyList.get(options3);
-                        key[1] =  Double.parseDouble(keyList.get(options1));
-                        key[3] =  Double.parseDouble(keyList.get(options2));
-                        key[5] =  Double.parseDouble(keyList.get(options3));
+                        key[1] = Double.parseDouble(keyList.get(options1));
+                        key[3] = Double.parseDouble(keyList.get(options2));
+                        key[5] = Double.parseDouble(keyList.get(options3));
                         dekeyText.setText(tx);
                     }
                 })
                         .setSubmitText("确定")//确定按钮文字
                         .setCancelText("取消")//取消按钮文字
-                        .setTitleText("加密密钥选择")//标题
+                        .setTitleText("解密密钥选择")//标题
                         .setSubCalSize(18)//确定和取消文字大小
                         .setTitleSize(20)//标题文字大小
                         .setContentTextSize(18)//滚轮文字大小
@@ -214,6 +214,14 @@ public class DecodeActivity extends AppCompatActivity implements CardView.OnClic
                     ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
                 } else {
                     flag = 2;
+                    openAlbum();
+                }
+                break;
+            case R.id.choose_de:
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                } else {
+                    flag = 3;
                     openAlbum();
                 }
                 break;
@@ -340,6 +348,15 @@ public class DecodeActivity extends AppCompatActivity implements CardView.OnClic
             } else if (flag == 2) {
                 originBitmap = BitmapFactory.decodeFile(imagePath);
                 originImage.setImageBitmap(originBitmap);
+            } else if (flag == 3) {
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inMutable = true;
+                options.inSampleSize = 1;
+                options.inScaled = false;
+                options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                resultBitmap = BitmapFactory.decodeFile(imagePath, options);
+                decodeImage.setImageBitmap(resultBitmap);
+                resultArray = To.BitmapToArray(resultBitmap);
             }
         } else {
             Toast.makeText(this, "获取图片失败", Toast.LENGTH_SHORT).show();

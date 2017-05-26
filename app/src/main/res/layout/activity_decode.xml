@@ -20,6 +20,17 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <info.hoang8f.widget.FButton
+                android:id="@+id/choose_de"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="选择解密解压缩图像"
+                android:textColor="@android:color/white"
+                android:textSize="14dp"
+                fbutton:buttonColor="@color/fbutton_color_peter_river"
+                fbutton:shadowEnabled="true" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

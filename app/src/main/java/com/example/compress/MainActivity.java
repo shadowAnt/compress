@@ -24,9 +24,17 @@ public class MainActivity extends AppCompatActivity {
         Bitmap lena = BitmapFactory.decodeResource(getResources(), R.drawable.lena);
         Bitmap peppers = BitmapFactory.decodeResource(getResources(), R.drawable.peppers);
         Bitmap AHU = BitmapFactory.decodeResource(getResources(), R.drawable.ahu);
-        To.saveImageToGallery(this, lena, "lena");
-        To.saveImageToGallery(this, peppers, "peppers");
-        To.saveImageToGallery(this, AHU, "AHU");
+        Bitmap boat = BitmapFactory.decodeResource(getResources(), R.drawable.boat);
+        Bitmap tiffany = BitmapFactory.decodeResource(getResources(), R.drawable.tiffany);
+        Bitmap jet = BitmapFactory.decodeResource(getResources(), R.drawable.jet);
+        Bitmap splash = BitmapFactory.decodeResource(getResources(), R.drawable.splash);
+        To.saveImageToGallery(this, lena, "lena", 0);
+        To.saveImageToGallery(this, peppers, "peppers", 0);
+        To.saveImageToGallery(this, AHU, "AHU", 0);
+        To.saveImageToGallery(this, boat, "boat", 0);
+        To.saveImageToGallery(this, tiffany, "tiffany", 0);
+        To.saveImageToGallery(this, jet, "jet", 0);
+        To.saveImageToGallery(this, splash, "splash", 0);
 
 //        TextView textView = (TextView) findViewById(R.id.test);
 //        String s = "";

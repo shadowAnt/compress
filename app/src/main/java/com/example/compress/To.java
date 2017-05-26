@@ -6,8 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Environment;
-import android.provider.MediaStore;
-import android.util.Log;
 
 import com.example.compress.util.Chaotic;
 import com.example.compress.util.Decryption;
@@ -26,7 +24,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import static android.R.attr.path;
 import static java.lang.Math.log10;
 
 /**
@@ -546,22 +543,26 @@ public class To {
      *
      * @param context 上下文
      * @param bmp     要处理的bitmap
+     * @param name    存储时候使用的名字
+     * @param flag    0时候不加当前时间，则为覆盖存储 1为加时间的
      */
-    public static void saveImageToGallery(Context context, Bitmap bmp, String name) {
+    public static void saveImageToGallery(Context context, Bitmap bmp, String name, int flag) {
         // 首先保存图片
-        File appDir = new File(Environment.getExternalStorageDirectory(), "Boohee");
+        File appDir = new File(Environment.getExternalStorageDirectory(), "a0");
         if (!appDir.exists()) {
             appDir.mkdir();
         }
-        String fileName = name + ".jpg";
-        File file = new File(Environment.getExternalStorageDirectory() + "/Boohee/" + fileName);
+        String fileName = name + ".png";
+        if (flag == 1) {
+            fileName = System.currentTimeMillis() + fileName;
+        }
+        File file = new File(appDir, fileName);
         if (file.exists()) {
             file.delete();
-            Log.e("delete", name + "delete！");
         }
         try {
             FileOutputStream fos = new FileOutputStream(file);
-            bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, fos);
             fos.flush();
             fos.close();
         } catch (FileNotFoundException e) {
@@ -571,8 +572,9 @@ public class To {
         }
 
         // 最后通知图库更新
-        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + path)));
-        Log.e("success", name + "make success！");
+        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        intent.setData(Uri.parse(file.getPath()));
+        context.sendBroadcast(intent);
     }
 
     /**

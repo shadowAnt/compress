@@ -98,9 +98,8 @@ public class TamperActivity extends AppCompatActivity implements CardView.OnClic
                 break;
             case R.id.nextButton_tamper:
                 //TODO 下一步开始还原 提示
+                To.saveImageToGallery(this, resultBitmap, "resultBitmap", 1);
                 finish();
-//                Intent intent2 = new Intent(this, DecodeActivity.class);
-//                startActivity(intent2);
                 break;
             case R.id.quitButton_tamper:
                 //TODO 返回上一步

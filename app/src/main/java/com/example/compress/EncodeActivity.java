@@ -29,7 +29,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.apkfuns.xprogressdialog.XProgressDialog;
-import com.bigkoo.pickerview.OptionsPickerView;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import net.lemonsoft.lemonhello.LemonHello;
@@ -126,6 +125,16 @@ public class EncodeActivity extends AppCompatActivity implements CardView.OnClic
                                 resultImage.setImageBitmap(resultBitmap);
                                 GlobalVaries globalVaries = (GlobalVaries) getApplication();
                                 globalVaries.setResultArray(resultArray);
+                                int resultHeight = resultBitmap.getHeight();
+                                int resultWidth = resultBitmap.getWidth();
+                                int originHeight = originBitmap.getHeight();
+                                int originWidth = originBitmap.getWidth();
+                                double radio = (resultHeight * resultWidth) / (double) (originHeight * originWidth) * 100;
+                                java.text.DecimalFormat df = new java.text.DecimalFormat("#.00");
+                                String fileSizeString = df.format(radio);
+                                String s = "处理前图像\n    长： " + originWidth + "\n    宽： " + originHeight + "\n处理后图像\n    长： " + resultWidth + "\n    宽： " + resultHeight + "\n";
+                                s += "压缩率： " + fileSizeString + "%";
+                                resultText.setText(s);
                                 globalVaries.setEn(true);
                                 dialog.dismiss();
                             }
@@ -154,7 +163,6 @@ public class EncodeActivity extends AppCompatActivity implements CardView.OnClic
                 }
                 int originHight = originBitmap.getHeight();
                 int originWidth = originBitmap.getWidth();
-
                 GlobalVaries globalVaries = (GlobalVaries) getApplication();
                 globalVaries.setOriginHeight(originHight);
                 globalVaries.setOriginWidth(originWidth);
