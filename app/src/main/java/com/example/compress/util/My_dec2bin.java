@@ -6,22 +6,7 @@ package com.example.compress.util;
 
 public class My_dec2bin {
     /**
-     * function bitmap=my_dec2bin(dec,x)
-     * len=numel(dec);
-     * bitmap=zeros(len*x,1);
-     * index=1;
-     * for i=1:len
-     * temp=dec(i);
-     * for j=1:x
-     * bitmap(index)=mod(temp,2);
-     * index=index+1;
-     * temp=floor(temp/2);
-     * end
-     * end
-     *
-     * @param dec
-     * @param n
-     * @return
+     * 两个十进制数转化为16位bitmap
      */
     public static double[] my_dec2bin(double[] dec, int n) {
         int len = dec.length;
@@ -30,9 +15,9 @@ public class My_dec2bin {
         for (int i = 0; i < len; i++) {
             int temp = (int) dec[i];
             for (int j = 0; j < n; j++) {
-                bitmap[index] =  temp % 2;
+                bitmap[index] = temp % 2;
                 index++;
-                temp =  temp / 2;
+                temp = temp / 2;
             }
         }
         return bitmap;

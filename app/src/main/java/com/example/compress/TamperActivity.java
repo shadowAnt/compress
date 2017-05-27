@@ -45,7 +45,6 @@ public class TamperActivity extends AppCompatActivity implements CardView.OnClic
 
         GlobalVaries globalVaries = (GlobalVaries) getApplication();
         resultArray = globalVaries.getResultArray();
-
         ScrollView scrollView = (ScrollView) findViewById(R.id.scrollTamper);
         scrollView.setVerticalScrollBarEnabled(false);
         attackImage = (GifImageView) findViewById(R.id.attack);

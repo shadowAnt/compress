@@ -173,7 +173,6 @@ public class DecodeActivity extends AppCompatActivity implements CardView.OnClic
                         double[][][] threeArray = To.BitmapToArray(authenticationBitmap);//原始图像的三位数组
                         double[][][] binaryArray = To.RGBtoBinary(threeArray);//二值化后的三位数组
                         double[][][] encodeBinaryArray = To.EncodeBinaryArray(binaryArray, key);//加密后的认证图像三维数组
-
                         //TODO 解密
                         double[][][][] ans = To.De(resultArray, originHight, originWidth, m, n, encodeBinaryArray, key);
                         double[][][] Ic = ans[0];

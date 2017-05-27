@@ -5,6 +5,7 @@ package com.example.compress.util;
  */
 
 public class Extr {
+
     public static double extr(double a, double b, double[] dec) {
         int code;
         if (a == b) {

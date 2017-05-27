@@ -5,13 +5,7 @@ package com.example.compress.util;
  */
 
 public class Embed {
-    /**
-     * @param a
-     * @param b
-     * @param bitmap
-     * @param code
-     * @return
-     */
+
     public static double[] embed(double a, double b, double[] bitmap, double code) {
         if (a == b) {
             if (code == 1) {

@@ -13,6 +13,10 @@ public final class GlobalVaries extends Application {
     private String URL;
     private double[][][] encodeBinaryArray;
     private double[] key;
+    private double[][][] resultArray;
+    private double[][][] tamperResultArray;
+    private int originHeight;
+    private int originWidth;
 
     public double[] getKey() {
         return key;
@@ -29,9 +33,6 @@ public final class GlobalVaries extends Application {
     public void setURL(String URL) {
         this.URL = URL;
     }
-
-    private double[][][] resultArray;
-    private double[][][] tamperResultArray;
 
     public double[][][] getEncodeBinaryArray() {
         return encodeBinaryArray;
@@ -57,15 +58,6 @@ public final class GlobalVaries extends Application {
         this.tamperResultArray = tamperResultArray;
     }
 
-    public void toNull(){//清零
-        encodeBinaryArray = null;
-        resultArray = null;
-        tamperResultArray = null;
-        isEn = false;
-        isTamper = false;
-        URL = null;
-    }
-
     public Boolean getEn() {
         return isEn;
     }
@@ -82,9 +74,6 @@ public final class GlobalVaries extends Application {
         isTamper = tamper;
     }
 
-    private int originHeight;
-    private int originWidth;
-
     public int getOriginHeight() {
         return originHeight;
     }
@@ -99,5 +88,14 @@ public final class GlobalVaries extends Application {
 
     public void setOriginWidth(int originWidth) {
         this.originWidth = originWidth;
+    }
+
+    public void toNull() {//清零
+        encodeBinaryArray = null;
+        resultArray = null;
+        tamperResultArray = null;
+        isEn = false;
+        isTamper = false;
+        URL = null;
     }
 }

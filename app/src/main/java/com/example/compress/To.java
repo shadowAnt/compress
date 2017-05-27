@@ -23,6 +23,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static java.lang.Math.log10;
 
@@ -554,7 +556,10 @@ public class To {
         }
         String fileName = name + ".png";
         if (flag == 1) {
-            fileName = System.currentTimeMillis() + fileName;
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date curDate = new Date(System.currentTimeMillis());
+            String str = formatter.format(curDate);
+            fileName = str + fileName;
         }
         File file = new File(appDir, fileName);
         if (file.exists()) {

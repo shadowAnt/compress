@@ -6,10 +6,11 @@ package com.example.compress.util;
 
 public class Decryption {
     /**
-     * @param a
-     * @param b
-     * @param key
-     * @return
+     * @param a   四元组a
+     * @param b   四元组b
+     * @param dec 四元组 长度为2的数组
+     * @param key 密钥
+     * @return 解密后的四元组
      */
     public static double[] decrption(double a, double b, double[] dec, double[] key) {
         double[] xor_data = Rand_numbers.Rand_numbers(key, 3, 256);

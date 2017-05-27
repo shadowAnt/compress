@@ -5,6 +5,7 @@ package com.example.compress.util;
  */
 
 public class Chaotic {
+
     public static double[] chaotic_maping_sequence(double a, double b, int n) {
         double[] sequence = new double[n];
         sequence[0] = a;
@@ -14,21 +15,6 @@ public class Chaotic {
         return sequence;
     }
 
-    /**
-     * s=sequence;
-     * rand_order=zeros(1,n);
-     * for i=1:n
-     * %循环找最小的，把坐标放到rand_order中，然后把该值设置为100最大，继续循环
-     * pos=find(s==min(s));
-     * rand_order(i)=pos(1);
-     * s(pos(1))=100;
-     * end
-     *
-     * @param a
-     * @param b
-     * @param n
-     * @return
-     */
     public static double[] chaotic_maping_order(double a, double b, int n) {
         double[] sequence = new double[n];
         sequence[0] = a;

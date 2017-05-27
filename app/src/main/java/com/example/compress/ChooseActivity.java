@@ -27,9 +27,7 @@ public class ChooseActivity extends AppCompatActivity implements CardView.OnClic
         super.onCreate(savedInstanceState);
         //TODO 顶部融为一体
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            //透明状态栏
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            //透明导航栏
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         }
         setContentView(R.layout.activity_choose);

@@ -35,6 +35,9 @@ public class MainActivity extends AppCompatActivity {
         To.saveImageToGallery(this, tiffany, "tiffany", 0);
         To.saveImageToGallery(this, jet, "jet", 0);
         To.saveImageToGallery(this, splash, "splash", 0);
+        Intent intent = new Intent(this, ChooseActivity.class);
+        startActivity(intent);
+        finish();
 
 //        TextView textView = (TextView) findViewById(R.id.test);
 //        String s = "";
@@ -113,9 +116,5 @@ public class MainActivity extends AppCompatActivity {
 //        }
 //        s += "\n\n";
 //        textView.setText(s);
-
-        Intent intent = new Intent(this, ChooseActivity.class);
-        startActivity(intent);
-        finish();
     }
 }
